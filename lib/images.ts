@@ -2,7 +2,7 @@
 export const aboutImages = {
   // Mission & Vision section image
   mission: {
-    src: "/logos/sight_logo.png",
+    src: "/logos/sight.png",
     alt: "SIGHT ISIMM Logo",
     width: 600,
     height: 500,

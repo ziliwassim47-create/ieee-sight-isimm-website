@@ -1,10 +1,10 @@
 // Logo configuration for the SIGHT ISIMM website
 export const logos = {
   wie: {
-    src: "/logos/sight_logo.png",
+    src: "/logos/sight.png",
     alt: "SIGHT ISIMM Logo",
-    width: 180,
-    height: 75,
+    width: 335,
+    height: 337,
     className: "h-16 w-auto",
   },
   ieee: {
@@ -39,4 +39,4 @@ export type LogoProps = {
 // Helper function to get logo configuration
 export const getLogoConfig = (type: keyof typeof logos) => {
   return logos[type]
-} 
+}

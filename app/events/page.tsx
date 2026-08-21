@@ -1,20 +1,23 @@
-"use client"
+﻿"use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Calendar, MapPin, Users, X, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+import { Calendar, MapPin, Users, X, ChevronLeft, ChevronRight, ExternalLink, Loader2, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { NewsletterSection } from "@/components/newsletter-section"
+import { contentHref } from "@/lib/slug"
 
 interface Event {
   _id: string
   title: string
   description: string
   date: string
+  dateIsProvisional?: boolean
   location: string
   eventType?: "upcoming" | "previous"
   registrationLink?: string
+  vToolsUrl?: string
   attendees: number
   images: string[]
   created_at: string
@@ -24,8 +27,12 @@ interface Event {
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
+  const [activeSection, setActiveSection] = useState<"upcoming" | "previous">("upcoming")
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const upcomingSectionRef = useRef<HTMLElement | null>(null)
+  const previousSectionRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -73,7 +80,8 @@ export default function EventsPage() {
     }
   }
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string, provisional?: boolean) => {
+    if (provisional) return `${new Date(dateString).getFullYear()} · date to confirm`
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -82,7 +90,7 @@ export default function EventsPage() {
   }
 
   const handleRefresh = async () => {
-    setLoading(true)
+    setRefreshing(true)
     try {
       const response = await fetch('/api/events?t=' + Date.now())
       const data = await response.json()
@@ -90,8 +98,14 @@ export default function EventsPage() {
         setEvents(data.data || [])
       }
     } finally {
-      setLoading(false)
+      setRefreshing(false)
     }
+  }
+
+  const scrollToSection = (section: "upcoming" | "previous") => {
+    setActiveSection(section)
+    const target = section === "upcoming" ? upcomingSectionRef.current : previousSectionRef.current
+    target?.scrollIntoView({ behavior: "smooth", block: "start" })
   }
 
   const upcomingEvents = useMemo(() => {
@@ -106,6 +120,22 @@ export default function EventsPage() {
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }, [events])
 
+  useEffect(() => {
+    const updateActiveSection = () => {
+      const previousSection = previousSectionRef.current
+      if (!previousSection) return
+      setActiveSection(previousSection.getBoundingClientRect().top <= 170 ? "previous" : "upcoming")
+    }
+
+    updateActiveSection()
+    window.addEventListener("scroll", updateActiveSection, { passive: true })
+    window.addEventListener("resize", updateActiveSection)
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection)
+      window.removeEventListener("resize", updateActiveSection)
+    }
+  }, [loading])
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -118,7 +148,43 @@ export default function EventsPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-16">
+      <div className="fixed inset-x-0 top-20 z-[90] border-b border-border/80 bg-background/95 shadow-sm backdrop-blur-xl">
+        <div className="container relative mx-auto flex h-16 items-center justify-between gap-2 px-4 md:justify-center">
+          <div className="inline-flex rounded-full border border-border bg-muted/60 p-1" role="group" aria-label="Event sections">
+            <button
+              type="button"
+              onClick={() => scrollToSection("upcoming")}
+              aria-pressed={activeSection === "upcoming"}
+              className={`rounded-full px-3 py-2 text-xs font-semibold transition-colors sm:px-5 sm:text-sm ${activeSection === "upcoming" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Upcoming<span className="hidden sm:inline"> Events</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("previous")}
+              aria-pressed={activeSection === "previous"}
+              className={`rounded-full px-3 py-2 text-xs font-semibold transition-colors sm:px-5 sm:text-sm ${activeSection === "previous" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Previous<span className="hidden sm:inline"> Events</span>
+            </button>
+          </div>
+
+          <Button
+            type="button"
+            onClick={handleRefresh}
+            variant="outline"
+            size="sm"
+            disabled={refreshing}
+            className="shrink-0 rounded-full md:absolute md:right-4"
+          >
+            <RefreshCw className={`h-4 w-4 sm:mr-2 ${refreshing ? "animate-spin" : ""}`} />
+            <span className="hidden sm:inline">Refresh Events</span>
+            <span className="sr-only sm:hidden">Refresh Events</span>
+          </Button>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-red-50 to-white py-20">
         <div className="container mx-auto px-4">
@@ -134,17 +200,10 @@ export default function EventsPage() {
       </section>
 
       {/* Upcoming Events */}
-      <section className="py-20 bg-white">
+      <section ref={upcomingSectionRef} id="upcoming-events" className="scroll-mt-40 bg-white py-20">
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
+          <div className="mb-8 flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-900">Upcoming Events ({upcomingEvents.length})</h2>
-            <Button 
-              onClick={handleRefresh} 
-              variant="outline"
-              size="sm"
-            >
-              Refresh Events
-            </Button>
           </div>
 
           {upcomingEvents.length === 0 ? (
@@ -186,7 +245,7 @@ export default function EventsPage() {
                       <div className="space-y-2 text-sm text-gray-500">
                         <div className="flex items-center">
                           <Calendar className="h-4 w-4 mr-2 text-red-700" />
-                          {formatDate(event.date)}
+                          {formatDate(event.date, event.dateIsProvisional)}
                         </div>
                         <div className="flex items-center">
                           <MapPin className="h-4 w-4 mr-2 text-red-700" />
@@ -197,18 +256,20 @@ export default function EventsPage() {
                           {event.attendees} attendees
                         </div>
                       </div>
-                      <div className="mt-5">
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        <Button asChild variant="outline" className="flex-1"><Link href={contentHref("events", event)}>View details</Link></Button>
                         {event.registrationLink ? (
-                          <Button asChild className="w-full bg-red-700 hover:bg-red-800 text-white">
+                          <Button asChild className="flex-1 bg-red-700 text-white hover:bg-red-800">
                             <Link href={event.registrationLink} target="_blank" rel="noopener noreferrer">
                               Register Now
                             </Link>
                           </Button>
                         ) : (
-                          <Button className="w-full" variant="outline" disabled>
+                          <Button className="flex-1" variant="outline" disabled>
                             Registration Soon
                           </Button>
                         )}
+                        {event.vToolsUrl && <Button asChild variant="outline" className="flex-1"><Link href={event.vToolsUrl} target="_blank" rel="noopener noreferrer">vTools<ExternalLink className="ml-2 h-4 w-4" /></Link></Button>}
                       </div>
                     </div>
                   </div>
@@ -219,7 +280,7 @@ export default function EventsPage() {
       </section>
 
       {/* Previous Events */}
-      <section className="py-20 bg-gray-50 border-t">
+      <section ref={previousSectionRef} id="previous-events" className="scroll-mt-40 border-t bg-gray-50 py-20">
         <div className="container mx-auto px-4">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900">Previous Events ({previousEvents.length})</h2>
@@ -259,7 +320,7 @@ export default function EventsPage() {
                     <div className="space-y-2 text-sm text-gray-500">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-2 text-red-700" />
-                        {formatDate(event.date)}
+                        {formatDate(event.date, event.dateIsProvisional)}
                       </div>
                       <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-2 text-red-700" />
@@ -270,6 +331,7 @@ export default function EventsPage() {
                         {event.attendees} attendees
                       </div>
                     </div>
+                    {event.vToolsUrl && <Button asChild variant="outline" size="sm" className="mt-5"><Link href={event.vToolsUrl} target="_blank" rel="noopener noreferrer" onClick={(clickEvent) => clickEvent.stopPropagation()}>IEEE vTools<ExternalLink className="ml-2 h-4 w-4" /></Link></Button>}
                   </div>
                 </div>
               ))}
@@ -337,7 +399,7 @@ export default function EventsPage() {
                 <div className="grid md:grid-cols-3 gap-4 text-sm">
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-2 text-red-700" />
-                    {formatDate(selectedEvent.date)}
+                    {formatDate(selectedEvent.date, selectedEvent.dateIsProvisional)}
                   </div>
                   <div className="flex items-center">
                     <MapPin className="h-4 w-4 mr-2 text-red-700" />

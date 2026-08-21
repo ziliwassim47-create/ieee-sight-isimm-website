@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/mongodb'
+import { unauthorizedUnlessAdmin } from '@/lib/admin-auth'
+import { fallbackEvents } from '@/lib/fallback-data'
 
 // GET all events
 export async function GET() {
@@ -8,18 +10,18 @@ export async function GET() {
     const events = await db.collection('events').find({}).sort({ created_at: -1 }).toArray()
     return NextResponse.json({ 
       success: true, 
-      data: events
+      data: events.length ? events : fallbackEvents,
+      source: events.length ? 'mongodb' : 'fallback'
     })
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, message: 'Internal server error', error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    )
+  } catch {
+    return NextResponse.json({ success: true, data: fallbackEvents, source: 'fallback' })
   }
 }
 
 // POST new event
 export async function POST(request: NextRequest) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const eventData = await request.json()
 
@@ -33,6 +35,7 @@ export async function POST(request: NextRequest) {
 
     const eventType = eventData.eventType === 'upcoming' ? 'upcoming' : 'previous'
     const normalizedRegistrationLink = (eventData.registrationLink ?? '').toString().trim()
+    const normalizedVToolsUrl = (eventData.vToolsUrl ?? '').toString().trim()
     if (eventType === 'upcoming') {
       if (!normalizedRegistrationLink) {
         return NextResponse.json(
@@ -47,6 +50,12 @@ export async function POST(request: NextRequest) {
         )
       }
     }
+    if (normalizedVToolsUrl && !/^https?:\/\//i.test(normalizedVToolsUrl)) {
+      return NextResponse.json(
+        { success: false, message: 'vToolsUrl must be a valid http/https URL' },
+        { status: 400 }
+      )
+    }
 
     const db = await getDb()
     const now = new Date()
@@ -57,6 +66,7 @@ export async function POST(request: NextRequest) {
       location: eventData.location,
       eventType,
       registrationLink: eventType === 'upcoming' ? normalizedRegistrationLink : '',
+      vToolsUrl: normalizedVToolsUrl,
       attendees: eventData.attendees || 0,
       images: eventData.images || [],
       created_at: now,
@@ -74,4 +84,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-} 
+}

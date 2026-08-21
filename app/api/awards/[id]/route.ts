@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
 import { ObjectId } from "mongodb"
+import { unauthorizedUnlessAdmin } from "@/lib/admin-auth"
 
 const isValidImageUrl = (value: string) => /^https?:\/\//i.test(value) || value.startsWith("/")
 const normalizeImageUrls = (value: unknown): string[] => {
@@ -39,6 +40,8 @@ export async function GET(request: NextRequest, context: Context) {
 }
 
 export async function PUT(request: NextRequest, context: Context) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const params = await context.params
     const id = params.id
@@ -83,6 +86,8 @@ export async function PUT(request: NextRequest, context: Context) {
 }
 
 export async function DELETE(request: NextRequest, context: Context) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const params = await context.params
     const id = params.id

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
+import { unauthorizedUnlessAdmin } from "@/lib/admin-auth"
+import { fallbackNews } from "@/lib/fallback-data"
 
 const ALLOWED_CATEGORIES = [
   "Announcement",
@@ -37,16 +39,15 @@ export async function GET() {
       _id: item._id?.toString?.() ?? item._id,
     }))
 
-    return NextResponse.json({ success: true, data: serialized })
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch news", error: String(error) },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: true, data: serialized.length ? serialized : fallbackNews, source: serialized.length ? "mongodb" : "fallback" })
+  } catch {
+    return NextResponse.json({ success: true, data: fallbackNews, source: "fallback" })
   }
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const body = await request.json()
     const { title, summary, date, category, imageUrls, imageUrl, link, linkLabel, isPinned, hasDeadline, deadlineDate } = body

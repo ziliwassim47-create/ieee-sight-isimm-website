@@ -1,15 +1,16 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Calendar, ChevronLeft, ChevronRight, Filter, Loader2, Search } from "lucide-react"
+import { Calendar, ChevronLeft, ChevronRight, ExternalLink, Filter, Loader2, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { NewsletterSection } from "@/components/newsletter-section"
 import { getProjects } from "@/lib/api"
+import { contentHref } from "@/lib/slug"
 
 type ProjectStatus = "Completed" | "In Progress" | "Planned"
 
@@ -18,12 +19,14 @@ interface ProjectItem {
   title: string
   description: string
   date: string
+  dateIsProvisional?: boolean
   projectType: string
   customType?: string
   displayType?: string
   imageUrls?: string[]
   imageUrl?: string
   proposalFormUrl?: string
+  vToolsUrl?: string
   status: ProjectStatus
   createdAt?: string
   updatedAt?: string
@@ -74,7 +77,7 @@ function ProjectImageCarousel({ images, title }: { images: string[]; title: stri
 const getStatusClasses = (status: ProjectStatus) => {
   if (status === "Completed") return "bg-emerald-100 text-emerald-800 border-emerald-200"
   if (status === "In Progress") return "bg-amber-100 text-amber-800 border-amber-200"
-  return "bg-sky-100 text-sky-800 border-sky-200"
+  return "bg-red-100 text-red-800 border-red-200"
 }
 
 const statusLabelForFilter = (status: ProjectStatus) => {
@@ -257,7 +260,7 @@ export default function ProjectsPage() {
                       </div>
                       <CardDescription className="flex items-center gap-2 text-sm text-gray-500 pt-1">
                         <Calendar className="h-4 w-4" />
-                        {new Date(project.date).toLocaleDateString()}
+                        {project.dateIsProvisional ? `${new Date(project.date).getFullYear()} · date to confirm` : new Date(project.date).toLocaleDateString()}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -267,19 +270,12 @@ export default function ProjectsPage() {
 
                       <p className="text-gray-700 leading-relaxed">{project.description}</p>
 
-                      <div className="pt-2 flex items-center justify-between">
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
                         <span className="text-xs text-gray-500">Status: {statusLabelForFilter(project.status)}</span>
-                        {project.proposalFormUrl ? (
-                          <Button asChild size="sm" className="bg-red-700 hover:bg-red-800 text-white">
-                            <Link href={project.proposalFormUrl} target="_blank" rel="noopener noreferrer">
-                              Proposal Form
-                            </Link>
-                          </Button>
-                        ) : (
-                          <Button size="sm" variant="outline" disabled>
-                            No Form
-                          </Button>
-                        )}
+                        <div className="flex flex-wrap gap-2">
+                          {project.vToolsUrl && <Button asChild size="sm" variant="outline"><Link href={project.vToolsUrl} target="_blank" rel="noopener noreferrer">vTools<ExternalLink className="ml-2 h-4 w-4" /></Link></Button>}
+                          <Button asChild size="sm"><Link href={contentHref("projects", project)}>View Project</Link></Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

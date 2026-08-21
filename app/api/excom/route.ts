@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
 import { ObjectId } from "mongodb"
+import { unauthorizedUnlessAdmin } from "@/lib/admin-auth"
+import { fallbackExcom, fallbackMandates } from "@/lib/fallback-data"
 
 export async function GET(request: NextRequest) {
   try {
@@ -35,16 +37,16 @@ export async function GET(request: NextRequest) {
       mandateId: m.mandateId?.toString?.() ?? m.mandateId,
     }))
 
-    return NextResponse.json({ success: true, data: serialized })
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch excom members", error: String(error) },
-      { status: 500 }
-    )
+    const useFallback = !serialized.length && (!mandateIdToUse || mandateIdToUse === fallbackMandates[0]._id)
+    return NextResponse.json({ success: true, data: useFallback ? fallbackExcom : serialized, source: useFallback ? "fallback" : "mongodb" })
+  } catch {
+    return NextResponse.json({ success: true, data: fallbackExcom, source: "fallback" })
   }
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const body = await request.json()
     const { mandateId, name, position, customPosition, email, facebook, linkedin, imageUrl, order } = body

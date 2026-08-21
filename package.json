@@ -6,6 +6,9 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
+    "seed": "node --env-file-if-exists=.env.local scripts/seed-sight-v2.mjs",
+    "import:source": "node --env-file-if-exists=.env.local scripts/import-sight-public-content.mjs",
+    "import:source:db": "node --env-file-if-exists=.env.local scripts/import-sight-public-content.mjs --database",
     "start": "next start"
   },
   "dependencies": {

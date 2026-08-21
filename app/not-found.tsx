@@ -1,0 +1,3 @@
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+export default function NotFound(){return <div className="container mx-auto flex min-h-[65vh] flex-col items-center justify-center px-4 text-center"><p className="text-sm font-semibold uppercase tracking-[.2em] text-primary">404</p><h1 className="mt-3 text-4xl font-bold">This page could not be found</h1><p className="mt-4 max-w-lg text-muted-foreground">The link may be outdated, or the content may have moved.</p><div className="mt-7 flex gap-3"><Button asChild><Link href="/">Back home</Link></Button><Button asChild variant="outline"><Link href="/projects">Explore projects</Link></Button></div></div>}

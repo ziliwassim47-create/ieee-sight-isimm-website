@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
 import { ObjectId } from "mongodb"
+import { unauthorizedUnlessAdmin } from "@/lib/admin-auth"
 
 const ALLOWED_STATUS = ["Completed", "In Progress", "Planned"] as const
 const isValidImageUrl = (value: string) => /^https?:\/\//i.test(value) || value.startsWith("/")
@@ -45,6 +46,8 @@ export async function GET(request: NextRequest, context: Context) {
 }
 
 export async function PUT(request: NextRequest, context: Context) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const params = await context.params
     const id = params.id
@@ -54,7 +57,7 @@ export async function PUT(request: NextRequest, context: Context) {
     }
 
     const body = await request.json()
-    const { title, description, date, projectType, customType, imageUrls, imageUrl, proposalFormUrl, status } = body
+    const { title, description, date, projectType, customType, imageUrls, imageUrl, proposalFormUrl, vToolsUrl, status } = body
 
     const update: Record<string, unknown> = { updatedAt: new Date() }
 
@@ -70,6 +73,16 @@ export async function PUT(request: NextRequest, context: Context) {
         )
       }
       update.proposalFormUrl = normalizedProposalFormUrl
+    }
+    if (vToolsUrl !== undefined) {
+      const normalizedVToolsUrl = vToolsUrl.toString().trim()
+      if (normalizedVToolsUrl && !/^https?:\/\//i.test(normalizedVToolsUrl)) {
+        return NextResponse.json(
+          { success: false, message: "vToolsUrl must be a valid http/https URL" },
+          { status: 400 }
+        )
+      }
+      update.vToolsUrl = normalizedVToolsUrl
     }
     if (imageUrls !== undefined || imageUrl !== undefined) {
       const normalizedImageUrls = normalizeImageUrls(imageUrls ?? imageUrl)
@@ -140,6 +153,8 @@ export async function PUT(request: NextRequest, context: Context) {
 }
 
 export async function DELETE(request: NextRequest, context: Context) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const params = await context.params
     const id = params.id

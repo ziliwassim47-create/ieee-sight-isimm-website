@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
+import { unauthorizedUnlessAdmin } from "@/lib/admin-auth"
+import { fallbackAwards } from "@/lib/fallback-data"
 
 const isValidImageUrl = (value: string) => /^https?:\/\//i.test(value) || value.startsWith("/")
 const normalizeImageUrls = (value: unknown): string[] => {
@@ -25,16 +27,15 @@ export async function GET() {
       ...a,
       _id: a._id?.toString?.() ?? a._id,
     }))
-    return NextResponse.json({ success: true, data: serialized })
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch awards", error: String(error) },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: true, data: serialized.length ? serialized : fallbackAwards, source: serialized.length ? "mongodb" : "fallback" })
+  } catch {
+    return NextResponse.json({ success: true, data: fallbackAwards, source: "fallback" })
   }
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const body = await request.json()
     const { title, year, description, imageUrls, imageUrl } = body

@@ -2,6 +2,12 @@
 const nextConfig = {
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "sight-isimm.ieee.tn",
+      },
+    ],
   },
 }
 

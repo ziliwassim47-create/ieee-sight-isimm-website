@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
+import { unauthorizedUnlessAdmin } from "@/lib/admin-auth"
+import { fallbackProjects } from "@/lib/fallback-data"
 
 const ALLOWED_STATUS = ["Completed", "In Progress", "Planned"] as const
 const isValidImageUrl = (value: string) => /^https?:\/\//i.test(value) || value.startsWith("/")
@@ -28,19 +30,18 @@ export async function GET() {
       _id: project._id?.toString?.() ?? project._id,
     }))
 
-    return NextResponse.json({ success: true, data: serialized })
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch projects", error: String(error) },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: true, data: serialized.length ? serialized : fallbackProjects, source: serialized.length ? "mongodb" : "fallback" })
+  } catch {
+    return NextResponse.json({ success: true, data: fallbackProjects, source: "fallback" })
   }
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const body = await request.json()
-    const { title, description, date, projectType, customType, imageUrls, imageUrl, proposalFormUrl, status } = body
+    const { title, description, date, projectType, customType, imageUrls, imageUrl, proposalFormUrl, vToolsUrl, status } = body
 
     if (!title || !description || !date || !projectType || !proposalFormUrl || !status) {
       return NextResponse.json(
@@ -72,6 +73,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const normalizedVToolsUrl = (vToolsUrl ?? '').toString().trim()
+    if (normalizedVToolsUrl && !/^https?:\/\//i.test(normalizedVToolsUrl)) {
+      return NextResponse.json(
+        { success: false, message: "vToolsUrl must be a valid http/https URL" },
+        { status: 400 }
+      )
+    }
+
     const normalizedImageUrls = normalizeImageUrls(imageUrls ?? imageUrl)
     if (normalizedImageUrls.some((value) => !isValidImageUrl(value))) {
       return NextResponse.json(
@@ -91,6 +100,7 @@ export async function POST(request: NextRequest) {
       displayType: normalizedType,
       imageUrls: normalizedImageUrls,
       proposalFormUrl: normalizedProposalFormUrl,
+      vToolsUrl: normalizedVToolsUrl,
       status: status as (typeof ALLOWED_STATUS)[number],
       createdAt: now,
       updatedAt: now,

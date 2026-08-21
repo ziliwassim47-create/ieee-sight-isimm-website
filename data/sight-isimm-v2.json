@@ -1,0 +1,691 @@
+{
+  "mandate": {
+    "seedKey": "mandate-2025-2026",
+    "name": "Mandate 2025-2026",
+    "startYear": 2025,
+    "endYear": 2026,
+    "isCurrent": true
+  },
+  "excom": [
+    {
+      "seedKey": "excom-wassim-zili-2025-2026",
+      "name": "Wassim Zili",
+      "position": "Chairman",
+      "displayPosition": "Chair",
+      "email": "sight-isimm@ieee.tn",
+      "imageUrl": "/images/committee/wassim_zili.PNG",
+      "order": 1
+    },
+    {
+      "seedKey": "excom-mohamed-sadok-bouslama-2025-2026",
+      "name": "Mohamed Sadok Bouslama",
+      "position": "Vice Chair",
+      "displayPosition": "Vice Chair",
+      "email": "sight-isimm@ieee.tn",
+      "imageUrl": "/images/committee/mohamed_sadok_bouslama.png",
+      "order": 2
+    },
+    {
+      "seedKey": "excom-maram-baccouche-2025-2026",
+      "name": "Maram Baccouche",
+      "position": "Secretary",
+      "displayPosition": "Secretary",
+      "email": "sight-isimm@ieee.tn",
+      "imageUrl": "/images/committee/maram_baccouche.png",
+      "order": 3
+    },
+    {
+      "seedKey": "excom-hamza-khadija-2025-2026",
+      "name": "Hamza Khadija",
+      "position": "Treasurer",
+      "displayPosition": "Treasurer",
+      "email": "sight-isimm@ieee.tn",
+      "imageUrl": "/images/committee/hamza_khadija.png",
+      "order": 4
+    },
+    {
+      "seedKey": "excom-mahmoud-balbali-2025-2026",
+      "name": "Mahmoud Balbali",
+      "position": "Webmaster",
+      "displayPosition": "Webmaster",
+      "email": "sight-isimm@ieee.tn",
+      "imageUrl": "/images/committee/mahmoud_balbali.PNG",
+      "order": 5
+    },
+    {
+      "seedKey": "excom-amani-rais-2025-2026",
+      "name": "Amani Rais",
+      "position": "HR Manager",
+      "displayPosition": "HR Manager",
+      "email": "sight-isimm@ieee.tn",
+      "imageUrl": "/images/committee/amani_rais.png",
+      "order": 6
+    },
+    {
+      "seedKey": "excom-ons-guidara-2025-2026",
+      "name": "Sami Ghedira",
+      "position": "Other",
+      "customPosition": "Advisor",
+      "displayPosition": "Advisor",
+      "email": "ghedirasam@yahoo.fr",
+      "imageUrl": "/placeholder-user.jpg",
+      "order": 7
+    },
+    {
+      "seedKey": "excom-saif-eddin-balbali-2025-2026",
+      "name": "Saif Eddin Balbali",
+      "position": "Project Coordinator",
+      "displayPosition": "Project Coordinator",
+      "email": "sight-isimm@ieee.tn",
+      "imageUrl": "/images/committee/saif_balbali.png",
+      "order": 8
+    }
+  ],
+  "events": [
+    {
+      "seedKey": "source-event-6a84d364f61b5bc9fe8d8d4b",
+      "sourceId": "6a84d364f61b5bc9fe8d8d4b",
+      "title": "EcoSTEM Changemakers Lab : Session 2 - Clean The Beach Protect The Blue",
+      "description": "Awareness & Beach Clean-Up was an environmental action organized at Qaraiya Beach, Monastir, as part of the UNESCO–SIGHT Ambassador Program. IEEE volunteers collaborated with Notre Grand Bleu and Lycée Hédi Khefacha in Monastir to conduct environmental awareness activities and a large-scale beach clean-up",
+      "date": "2026-07-11",
+      "location": "Qaraiya Beach, Monastir",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 35,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3185d6af6845b866156",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3365d6af6845b86615a",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3405d6af6845b86615c",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3405d6af6845b86615e",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3415d6af6845b866160",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3415d6af6845b866162",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3415d6af6845b866164",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3415d6af6845b866166",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3415d6af6845b866168",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3425d6af6845b86616a",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3425d6af6845b86616c",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3425d6af6845b86616e",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3425d6af6845b866171",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3425d6af6845b866173",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3435d6af6845b866175",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3435d6af6845b866177",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3435d6af6845b866179",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3435d6af6845b86617b",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d3435d6af6845b86617d",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d35fa3a48a7063363c39",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d360a3a48a7063363c3b"
+      ]
+    },
+    {
+      "seedKey": "source-event-6a84d1f25d6af6845b866155",
+      "sourceId": "6a84d1f25d6af6845b866155",
+      "title": "EcoSTEM Changemakers Lab : Session 1 - Youth & Women Driving Sustainable Innovation",
+      "description": "The first session of the EcoSTEM Changemakers Lab was an online educational and capacity-building event focused on empowering women and young people through STEM and sustainable innovation. Participants explored IEEE SIGHT, the Sustainable Development Goals, Women in Engineering, artificial intelligence for sustainable communities, and design-thinking approaches. The session encouraged participants to identify community challenges and transform them into innovative project ideas",
+      "date": "2026-07-07",
+      "location": "Google meet",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 34,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6a84d156e592ba1e5040aedd",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d1e8e592ba1e5040aedf",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d1eae592ba1e5040aee3",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d1eae592ba1e5040aee7",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d1ebe592ba1e5040aeec",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d1ece592ba1e5040aef0",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d1ece592ba1e5040aef4"
+      ]
+    },
+    {
+      "seedKey": "source-event-6a84d056e592ba1e5040aedc",
+      "sourceId": "6a84d056e592ba1e5040aedc",
+      "title": "3ich IEEE",
+      "description": "3ich IEEE was an outdoor camping experience held in Jendouba, bringing together IEEE members, students, volunteers, and community engagement enthusiasts. The activity promoted well-being, teamwork, and personal development through outdoor challenges, shared experiences, and collaboration in a natural environment.",
+      "date": "2026-05-17",
+      "location": "welja camp",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 34,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6a84d02127ff6c3bc569ffce",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d02627ff6c3bc569ffd0",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d02b27ff6c3bc569ffd2",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d03427ff6c3bc569ffd4",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d03427ff6c3bc569ffd6",
+        "https://sight-isimm.ieee.tn/api/upload/6a84d03527ff6c3bc569ffd8"
+      ]
+    },
+    {
+      "seedKey": "source-event-6a84cf9c27ff6c3bc569ffcd",
+      "sourceId": "6a84cf9c27ff6c3bc569ffcd",
+      "title": "UIUX4Good: Creating Purpose Driven Experiences",
+      "description": "UIUX4Good was a design-focused workshop introducing participants to UI/UX principles while emphasizing inclusive and human-centered technology. Participants explored how research, user experience, accessibility, and interface design can improve solutions developed for social and humanitarian purposes. The workshop encouraged students to place community needs and user experience at the center of technological innovation.",
+      "date": "2026-04-25",
+      "location": "Google meet",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 21,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6a84cf9a27ff6c3bc569ffcb"
+      ]
+    },
+    {
+      "seedKey": "source-event-6a84cf4127ff6c3bc569ffca",
+      "sourceId": "6a84cf4127ff6c3bc569ffca",
+      "title": "React4Good",
+      "description": "React4Good was a technical workshop combining web development education with the Tech4Good philosophy. Participants were introduced to React.js concepts and learned how modern web technologies can be used to develop solutions addressing social and humanitarian challenges. The workshop helped students improve their technical skills while encouraging them to design technology with positive societal impact.",
+      "date": "2026-04-09",
+      "location": "Google meet",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 21,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6a84cf2e27ff6c3bc569ffc1",
+        "https://sight-isimm.ieee.tn/api/upload/6a84cf3327ff6c3bc569ffc6"
+      ]
+    },
+    {
+      "seedKey": "source-event-6a84cdaf613db9a3bcdeb01c",
+      "sourceId": "6a84cdaf613db9a3bcdeb01c",
+      "title": "A Brief History",
+      "description": "A Brief History was an inspiring session exploring the evolution of IEEE SIGHT in Tunisia, delivered by Rima Fathallah and Med Yasser Bdioui. The session highlighted SIGHT’s mission, key milestones, and humanitarian impact while showing participants how technology and volunteer engagement can contribute to sustainable community development.",
+      "date": "2026-04-03",
+      "location": "Gallery Art +",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 17,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6a84cda0613db9a3bcdeb013",
+        "https://sight-isimm.ieee.tn/api/upload/6a84cda5613db9a3bcdeb018"
+      ]
+    },
+    {
+      "seedKey": "source-event-6a84cc4079615ea64a95f588",
+      "sourceId": "6a84cc4079615ea64a95f588",
+      "title": "Podcast 2.0 – Episode 2: Notre Grand Bleu",
+      "description": "The second episode of Podcast 2.0 featured Notre Grand Bleu, a Tunisian environmental organization committed to protecting marine ecosystems. The discussion raised awareness about marine pollution, biodiversity conservation, environmental responsibility, and the role of young people in protecting Tunisia’s coastline. The episode also strengthened collaboration between IEEE volunteers and local environmental actors.",
+      "date": "2026-03-28",
+      "location": "Art +",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 0,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6a84cbf079615ea64a95f57f"
+      ]
+    },
+    {
+      "seedKey": "source-event-6a84cb88613db9a3bcdeb012",
+      "sourceId": "6a84cb88613db9a3bcdeb012",
+      "title": "Quick SIGHT – Episode 1: SOS",
+      "description": "Quick SIGHT Episode 1 was a short awareness initiative presenting the mission and impact of SOS activities within the community. The episode helped make humanitarian topics accessible to students while promoting volunteerism, solidarity, and the values of IEEE SIGHT through concise and engaging digital content.",
+      "date": "2026-03-26",
+      "location": "Art +",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 0,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6a84cb7b613db9a3bcdeb008",
+        "https://sight-isimm.ieee.tn/api/upload/6a84cb81613db9a3bcdeb00d"
+      ]
+    },
+    {
+      "seedKey": "source-event-6a84cb27613db9a3bcdeb007",
+      "sourceId": "6a84cb27613db9a3bcdeb007",
+      "title": "Podcast 2.0 episode 1 with SOS: Awareness & Impact",
+      "description": "The first episode of Podcast 2.0 highlighted the work and social impact of SOS-related initiatives. The discussion focused on community engagement, volunteering, social responsibility, and the importance of youth participation in supporting vulnerable communities. The episode aimed to inspire students to become more engaged in humanitarian and community-oriented activities.",
+      "date": "2026-03-26",
+      "location": "Art +",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 0,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6a84cb07613db9a3bcdeaffb",
+        "https://sight-isimm.ieee.tn/api/upload/6a84cb0f613db9a3bcdeb004"
+      ]
+    },
+    {
+      "seedKey": "source-event-69c180c376eb4ffe3a7d48f0",
+      "sourceId": "69c180c376eb4ffe3a7d48f0",
+      "title": "IEEE SIGHT Launch Session",
+      "description": "The IEEE SIGHT Launch Session, organized by IEEE SIGHT ISIMM Student Branch in collaboration with IEEE Tunisia Section, introduced participants to the humanitarian technology program, highlighting IEEE SIGHT’s mission, benefits for students and communities, activities in Tunisia and worldwide, and opportunities to engage in technology-for-good initiatives such as Tech4Good, EMPOWER a Billion Lives, EPICS in IEEE, Smart Village, and REACH.",
+      "date": "2026-03-04",
+      "location": "online via Google Meet",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 45,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/69c180c076eb4ffe3a7d48ee"
+      ]
+    },
+    {
+      "seedKey": "source-event-69c17f6abefda08512dd3c63",
+      "sourceId": "69c17f6abefda08512dd3c63",
+      "title": "Info SESSION",
+      "description": "IEEE SIGHT ISIMM hosted its first-ever info-session to engage participants in a comprehensive overview of the chapter’s mission, vision, and values. The session showcased key achievements and milestones, presented current and upcoming projects, and encouraged active participation and collaboration. It aimed to inspire attendees to contribute to impactful humanitarian technology initiatives.",
+      "date": "2026-02-27",
+      "location": "online via Google Meet",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 35,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/69c17f52befda08512dd3c5f"
+      ]
+    },
+    {
+      "seedKey": "source-event-69c17d5fbefda08512dd3c5e",
+      "sourceId": "69c17d5fbefda08512dd3c5e",
+      "title": "Integration Day - ISIMM",
+      "description": "An event to welcome and integrate new students at ISIMM through workshops, team-building, and networking activities.",
+      "date": "2026-02-18",
+      "location": "ISIMM",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 30,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/69c17d538b328c5ffaf5135b"
+      ]
+    },
+    {
+      "seedKey": "source-event-69c17cca3a894bfbd260cf36",
+      "sourceId": "69c17cca3a894bfbd260cf36",
+      "title": "Integration Day-FSM",
+      "description": "Integration Day FSM is an event designed to welcome and integrate new students into the university environment through interactive activities, networking, and community engagement.",
+      "date": "2026-02-17",
+      "location": "FSM (Faculté des Sciences Monastir)",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 20,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/69c17ca33a894bfbd260cf2a"
+      ]
+    },
+    {
+      "seedKey": "source-event-6946c42aa8dd2cc77184bcc2",
+      "sourceId": "6946c42aa8dd2cc77184bcc2",
+      "title": "DESIGN4GOOD Bootcamp",
+      "description": "The Design4Good Workshop was a series of interactive learning sessions organized by IEEE SIGHT ISIMM SB, aimed at empowering members with design and video-editing skills to promote creativity for social good.",
+      "date": "2025-10-18",
+      "location": "Café culturel dar el habib, Monastir",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 26,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6946c3cda8dd2cc77184bcb9",
+        "https://sight-isimm.ieee.tn/api/upload/6946c3e5a8dd2cc77184bcbc",
+        "https://sight-isimm.ieee.tn/api/upload/6946c401a8dd2cc77184bcbe",
+        "https://sight-isimm.ieee.tn/api/upload/6946c41aa8dd2cc77184bcc0"
+      ]
+    },
+    {
+      "seedKey": "source-event-6946c2c4a8dd2cc77184bcb8",
+      "sourceId": "6946c2c4a8dd2cc77184bcb8",
+      "title": "3ich ieee 2.0",
+      "description": "This camping experience not only provided relaxation and enjoyment but also reinforced the strong bonds within the IEEE SIGHT community.",
+      "date": "2025-05-28",
+      "location": "IL Sogno camp, Sidi Bouali Sousse",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 27,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6946c2aca8dd2cc77184bcb5"
+      ]
+    },
+    {
+      "seedKey": "source-event-6946a3459792129fd6006cc2",
+      "sourceId": "6946a3459792129fd6006cc2",
+      "title": "SIGHT DAY Congress 3.0",
+      "description": "IEEE SIGHT Day Congress 3.0 – “Marine Life: Life Below Water”\nOrganized by IEEE ISIMM SIGHT SB, proud winners of the 2nd edition, this national congress gathered students, engineers, and changemakers from across Tunisia to explore innovative, sustainable tech solutions for marine conservation.",
+      "date": "2025-04-19",
+      "location": "Hotel Orient Palace Sousse",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 220,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/6946a1d3575d82bee6d05e30",
+        "https://sight-isimm.ieee.tn/api/upload/6946a219575d82bee6d05e34",
+        "https://sight-isimm.ieee.tn/api/upload/6946a2ad575d82bee6d05e38"
+      ]
+    },
+    {
+      "seedKey": "source-event-688bc28fb8b49730e6f97ae6",
+      "sourceId": "688bc28fb8b49730e6f97ae6",
+      "title": "SIGHT DAY Congress 2.0 Participation",
+      "description": "IEEE ISIMM SB’s engagement in the second edition of the SIGHT Day Congress, where members collaborated with global humanitarian technology advocates. The participation fostered knowledge exchange, showcased ongoing projects, and strengthened connections within the IEEE SIGHT community.",
+      "date": "2024-04-19",
+      "location": "Monastir",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 109,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/688bc275b8b49730e6f97aac",
+        "https://sight-isimm.ieee.tn/api/upload/688bc277b8b49730e6f97ab0",
+        "https://sight-isimm.ieee.tn/api/upload/688bc278b8b49730e6f97ab3",
+        "https://sight-isimm.ieee.tn/api/upload/688bc279b8b49730e6f97ab6",
+        "https://sight-isimm.ieee.tn/api/upload/688bc27ab8b49730e6f97ab9",
+        "https://sight-isimm.ieee.tn/api/upload/688bc27ab8b49730e6f97abc",
+        "https://sight-isimm.ieee.tn/api/upload/688bc27bb8b49730e6f97abf",
+        "https://sight-isimm.ieee.tn/api/upload/688bc27cb8b49730e6f97ac2",
+        "https://sight-isimm.ieee.tn/api/upload/688bc27db8b49730e6f97ac5",
+        "https://sight-isimm.ieee.tn/api/upload/688bc27db8b49730e6f97ac8",
+        "https://sight-isimm.ieee.tn/api/upload/688bc27eb8b49730e6f97acb",
+        "https://sight-isimm.ieee.tn/api/upload/688bc27fb8b49730e6f97ace",
+        "https://sight-isimm.ieee.tn/api/upload/688bc280b8b49730e6f97ad1",
+        "https://sight-isimm.ieee.tn/api/upload/688bc281b8b49730e6f97ad4",
+        "https://sight-isimm.ieee.tn/api/upload/688bc281b8b49730e6f97ad7",
+        "https://sight-isimm.ieee.tn/api/upload/688bc282b8b49730e6f97ada",
+        "https://sight-isimm.ieee.tn/api/upload/688bc283b8b49730e6f97add",
+        "https://sight-isimm.ieee.tn/api/upload/688bc284b8b49730e6f97ae0",
+        "https://sight-isimm.ieee.tn/api/upload/688bc285b8b49730e6f97ae3"
+      ]
+    },
+    {
+      "seedKey": "source-event-688bc208b8b49730e6f97aab",
+      "sourceId": "688bc208b8b49730e6f97aab",
+      "title": "3ich IEEE 1.0",
+      "description": "A motivational and community-building event designed to energize members and strengthen their connection to IEEE ISIMM SB. Through inspiring talks, activities, and shared experiences, it encourages active involvement and celebrates the spirit of being part of IEEE.",
+      "date": "2024-04-11",
+      "location": "Sousse",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 28,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/688bc1e6b8b49730e6f97a67",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1e7b8b49730e6f97a69",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1e8b8b49730e6f97a6d",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1e9b8b49730e6f97a71",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1ebb8b49730e6f97a75",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1ecb8b49730e6f97a79",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1edb8b49730e6f97a7d",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1eeb8b49730e6f97a80",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1efb8b49730e6f97a83",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1f0b8b49730e6f97a87",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1f1b8b49730e6f97a8c",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1f3b8b49730e6f97a90",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1f4b8b49730e6f97a93",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1f6b8b49730e6f97a97",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1f7b8b49730e6f97a9b",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1f7b8b49730e6f97a9e",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1fab8b49730e6f97aa2",
+        "https://sight-isimm.ieee.tn/api/upload/688bc1fbb8b49730e6f97aa6"
+      ]
+    },
+    {
+      "seedKey": "source-event-688bc19ab8b49730e6f97a66",
+      "sourceId": "688bc19ab8b49730e6f97a66",
+      "title": "Blender Workshop",
+      "description": "A hands-on session introducing participants to the basics of 3D modeling and animation using Blender. The workshop aims to spark creativity and provide practical skills in digital design and visual storytelling.",
+      "date": "2024-02-25",
+      "location": "ISIMM Campus, Monastir",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 35,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/688bc188b8b49730e6f97a40",
+        "https://sight-isimm.ieee.tn/api/upload/688bc188b8b49730e6f97a42",
+        "https://sight-isimm.ieee.tn/api/upload/688bc189b8b49730e6f97a45",
+        "https://sight-isimm.ieee.tn/api/upload/688bc18ab8b49730e6f97a48",
+        "https://sight-isimm.ieee.tn/api/upload/688bc18bb8b49730e6f97a4b",
+        "https://sight-isimm.ieee.tn/api/upload/688bc18cb8b49730e6f97a4e",
+        "https://sight-isimm.ieee.tn/api/upload/688bc18cb8b49730e6f97a51",
+        "https://sight-isimm.ieee.tn/api/upload/688bc18db8b49730e6f97a54",
+        "https://sight-isimm.ieee.tn/api/upload/688bc18eb8b49730e6f97a57",
+        "https://sight-isimm.ieee.tn/api/upload/688bc18fb8b49730e6f97a5a",
+        "https://sight-isimm.ieee.tn/api/upload/688bc190b8b49730e6f97a5d",
+        "https://sight-isimm.ieee.tn/api/upload/688bc191b8b49730e6f97a60",
+        "https://sight-isimm.ieee.tn/api/upload/688bc191b8b49730e6f97a63"
+      ]
+    },
+    {
+      "seedKey": "source-event-688bc13bb8b49730e6f97a3f",
+      "sourceId": "688bc13bb8b49730e6f97a3f",
+      "title": "Team Building",
+      "description": "An event dedicated to enhancing collaboration, communication, and trust among IEEE ISIMM SIGHT members through engaging activities and challenges designed to strengthen team spirit and group cohesion.",
+      "date": "2024-02-04",
+      "location": "Monastir",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 30,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/688bc110b8b49730e6f97a01",
+        "https://sight-isimm.ieee.tn/api/upload/688bc11bb8b49730e6f97a05",
+        "https://sight-isimm.ieee.tn/api/upload/688bc11bb8b49730e6f97a07",
+        "https://sight-isimm.ieee.tn/api/upload/688bc11db8b49730e6f97a0b",
+        "https://sight-isimm.ieee.tn/api/upload/688bc11eb8b49730e6f97a0f",
+        "https://sight-isimm.ieee.tn/api/upload/688bc11fb8b49730e6f97a13",
+        "https://sight-isimm.ieee.tn/api/upload/688bc121b8b49730e6f97a17",
+        "https://sight-isimm.ieee.tn/api/upload/688bc122b8b49730e6f97a1b",
+        "https://sight-isimm.ieee.tn/api/upload/688bc123b8b49730e6f97a1f",
+        "https://sight-isimm.ieee.tn/api/upload/688bc124b8b49730e6f97a22",
+        "https://sight-isimm.ieee.tn/api/upload/688bc125b8b49730e6f97a26",
+        "https://sight-isimm.ieee.tn/api/upload/688bc126b8b49730e6f97a29",
+        "https://sight-isimm.ieee.tn/api/upload/688bc127b8b49730e6f97a2d",
+        "https://sight-isimm.ieee.tn/api/upload/688bc129b8b49730e6f97a31",
+        "https://sight-isimm.ieee.tn/api/upload/688bc12ab8b49730e6f97a34",
+        "https://sight-isimm.ieee.tn/api/upload/688bc12bb8b49730e6f97a38",
+        "https://sight-isimm.ieee.tn/api/upload/688bc12cb8b49730e6f97a3b"
+      ]
+    },
+    {
+      "seedKey": "source-event-688bc0a2b8b49730e6f97a00",
+      "sourceId": "688bc0a2b8b49730e6f97a00",
+      "title": "International SIGHT Day",
+      "description": "An annual global observance organized under the IEEE Special Interest Group on Humanitarian Technology (SIGHT). Its purpose is to build community within the worldwide SIGHT network, raise awareness of IEEE SIGHT’s mission and activities, and celebrate the positive social impact made by SIGHT volunteers and groups through humanitarian technology initiatives.",
+      "date": "2023-05-05",
+      "location": "ISIMM Campus, Monastir",
+      "eventType": "previous",
+      "registrationLink": "",
+      "vToolsUrl": "",
+      "attendees": 25,
+      "images": [
+        "https://sight-isimm.ieee.tn/api/upload/688bc091b8b49730e6f979e4",
+        "https://sight-isimm.ieee.tn/api/upload/688bc092b8b49730e6f979e6",
+        "https://sight-isimm.ieee.tn/api/upload/688bc092b8b49730e6f979e8",
+        "https://sight-isimm.ieee.tn/api/upload/688bc092b8b49730e6f979ea",
+        "https://sight-isimm.ieee.tn/api/upload/688bc093b8b49730e6f979ec",
+        "https://sight-isimm.ieee.tn/api/upload/688bc093b8b49730e6f979ee",
+        "https://sight-isimm.ieee.tn/api/upload/688bc093b8b49730e6f979f0",
+        "https://sight-isimm.ieee.tn/api/upload/688bc093b8b49730e6f979f2",
+        "https://sight-isimm.ieee.tn/api/upload/688bc095b8b49730e6f979f4",
+        "https://sight-isimm.ieee.tn/api/upload/688bc095b8b49730e6f979f6",
+        "https://sight-isimm.ieee.tn/api/upload/688bc095b8b49730e6f979f8",
+        "https://sight-isimm.ieee.tn/api/upload/688bc096b8b49730e6f979fb",
+        "https://sight-isimm.ieee.tn/api/upload/688bc097b8b49730e6f979fe"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "seedKey": "source-project-69c177154e256e0024031324",
+      "sourceId": "69c177154e256e0024031324",
+      "title": "Aqua Sentinel autonomous AI-powered underwater monitoring system",
+      "description": "Aqua Sentinel is an AI-powered system for continuous and non-invasive marine monitoring. It integrates a BRUV (Baited Remote Underwater Video) system, deep learning (YOLOv8), and a mobile application to automatically detect, classify, and track fish species.\n\nThe system analyzes underwater data in real time, helping monitor biodiversity, detect invasive species, and support data-driven decisions for marine conservation.",
+      "date": "2025-12-23",
+      "projectType": "TSYP",
+      "customType": "",
+      "displayType": "TSYP",
+      "imageUrls": [
+        "https://sight-isimm.ieee.tn/api/upload/69c176c2845d9ecc8866e826"
+      ],
+      "proposalFormUrl": "https://docs.google.com/forms/d/e/1FAIpQLSe1yFbNfaSDWcsMBGp3ogbPPsTEaJ8RZ0SnXp9hYuzLesWjdw/viewform?usp=header",
+      "vToolsUrl": "",
+      "status": "Completed"
+    },
+    {
+      "seedKey": "source-project-69c1788e2661d2a697692b61",
+      "sourceId": "69c1788e2661d2a697692b61",
+      "title": "Smart Sign Language Translation Glove",
+      "description": "The Sign Language Translation Device is a smart glove-based system that converts hand gestures into spoken and displayed messages. Using integrated sensors and an Arduino, finger movements are detected and translated into predefined phrases shown on an LCD screen and a mobile application.",
+      "date": "2025-03-23",
+      "projectType": "SDC",
+      "customType": "",
+      "displayType": "SDC",
+      "imageUrls": [
+        "https://sight-isimm.ieee.tn/api/upload/69c178862661d2a697692b5e"
+      ],
+      "proposalFormUrl": "https://docs.google.com/forms/d/e/1FAIpQLSe1yFbNfaSDWcsMBGp3ogbPPsTEaJ8RZ0SnXp9hYuzLesWjdw/viewform?usp=header",
+      "vToolsUrl": "",
+      "status": "Completed"
+    },
+    {
+      "seedKey": "source-project-69c17a6c4e256e002403132f",
+      "sourceId": "69c17a6c4e256e002403132f",
+      "title": "Your Safety - Smart Road Safety System",
+      "description": "Your Safety is a technology-driven solution that enhances road safety by combining a mobile application, smart speed bumps, and AI-based driver fatigue detection to reduce accidents and improve infrastructure monitoring.\nThis project aims to address major road safety challenges such as poor infrastructure, reckless driving, and lack of enforcement. It integrates three key components: a mobile app that allows users to report road hazards with GPS and images, smart speed bumps that detect and control speeding vehicles, and an AI system that identifies drowsy drivers in real time.\nAligned with SDG 9 (Industry, Innovation, and Infrastructure), the project promotes safer and more sustainable communities through an innovative, multi-technology approach.",
+      "date": "2024-04-20",
+      "projectType": "SDC",
+      "customType": "",
+      "displayType": "SDC",
+      "imageUrls": [
+        "https://sight-isimm.ieee.tn/api/upload/69c179c14e256e002403132a"
+      ],
+      "proposalFormUrl": "https://docs.google.com/forms/d/e/1FAIpQLSe1yFbNfaSDWcsMBGp3ogbPPsTEaJ8RZ0SnXp9hYuzLesWjdw/viewform?usp=header",
+      "vToolsUrl": "",
+      "status": "Completed"
+    },
+    {
+      "seedKey": "source-project-69c1796591d7410be39449b0",
+      "sourceId": "69c1796591d7410be39449b0",
+      "title": "Smart House - Sustainable Water & Energy Solution",
+      "description": "The Smart House Project is a sustainable solution that integrates solar-powered water purification and renewable energy systems to provide clean water and eco-friendly energy in rural areas.\nThis project targets SDG 6 (Clean Water) and SDG 7 (Affordable and Clean Energy) by combining solar energy with water purification technologies. It aims to support rural communities by ensuring access to safe drinking water and reliable, renewable energy while reducing environmental impact.",
+      "date": "2023-12-18",
+      "projectType": "TSYP",
+      "customType": "",
+      "displayType": "TSYP",
+      "imageUrls": [
+        "https://sight-isimm.ieee.tn/api/upload/69c1790591d7410be39449ad"
+      ],
+      "proposalFormUrl": "https://docs.google.com/forms/d/e/1FAIpQLSe1yFbNfaSDWcsMBGp3ogbPPsTEaJ8RZ0SnXp9hYuzLesWjdw/viewform?usp=header",
+      "vToolsUrl": "",
+      "status": "Completed"
+    }
+  ],
+  "awards": [
+    {
+      "seedKey": "award-best-sight-group-2025-2026",
+      "title": "Best SIGHT Group 2025-2026",
+      "year": 2026,
+      "description": "Recognition of IEEE SIGHT ISIMM’s collective programme and humanitarian technology engagement.",
+      "imageUrls": [
+        "/images/home/hero-image.png"
+      ]
+    },
+    {
+      "seedKey": "award-sdc-4-best-ambassador",
+      "title": "SDC 4.0 Best Ambassador",
+      "year": 2026,
+      "description": "Best Ambassador recognition during SDC 4.0.",
+      "imageUrls": [
+        "/images/home/hero-image.png"
+      ]
+    },
+    {
+      "seedKey": "award-sdc-4-technical-second",
+      "title": "SDC 4.0 Technical — 2nd",
+      "year": 2026,
+      "description": "Second place in the technical track of SDC 4.0.",
+      "imageUrls": [
+        "/images/home/hero-image.png"
+      ]
+    },
+    {
+      "seedKey": "award-sdc-4-non-technical-third",
+      "title": "SDC 4.0 Non-Technical — 3rd",
+      "year": 2026,
+      "description": "Third place in the non-technical track of SDC 4.0.",
+      "imageUrls": [
+        "/images/home/hero-image.png"
+      ]
+    },
+    {
+      "seedKey": "award-tsyp-13-first",
+      "title": "TSYP 13.0 — 1st",
+      "year": 2025,
+      "description": "First-place recognition at TSYP 13.0.",
+      "imageUrls": [
+        "/images/home/hero-image.png"
+      ]
+    }
+  ],
+  "news": [
+    {
+      "seedKey": "news-2026-programme",
+      "title": "SIGHT ISIMM advances its 2026 humanitarian technology programme",
+      "summary": "The 2025–2026 mandate brings together community action, accessible STEM education, digital skills and responsible engineering projects.",
+      "date": "2026-01-15",
+      "category": "Announcement",
+      "imageUrls": [
+        "/images/home/hero-image.png"
+      ],
+      "link": "",
+      "linkLabel": "Read more",
+      "isPinned": true,
+      "hasDeadline": false,
+      "deadlineDate": ""
+    },
+    {
+      "seedKey": "news-protect-the-blue",
+      "title": "Protect the Blue connects technology with marine awareness",
+      "summary": "The initiative highlights practical community action and responsible innovation around coastal and marine ecosystems.",
+      "date": "2026-06-15",
+      "category": "Impact Story",
+      "imageUrls": [
+        "/images/events/international-sight-day.jpg"
+      ],
+      "link": "",
+      "linkLabel": "Read more",
+      "isPinned": false,
+      "hasDeadline": false,
+      "deadlineDate": ""
+    },
+    {
+      "seedKey": "news-ecostem-outreach",
+      "title": "EcoSTEM brings sustainable engineering to young learners",
+      "summary": "School outreach and hands-on sessions help learners explore STEM through environmental challenges and creative prototypes.",
+      "date": "2026-07-06",
+      "category": "Impact Story",
+      "imageUrls": [
+        "/images/events/3ich-ieee-2.jpg"
+      ],
+      "link": "",
+      "linkLabel": "Read more",
+      "isPinned": false,
+      "hasDeadline": false,
+      "deadlineDate": ""
+    },
+    {
+      "seedKey": "news-2026-recognition",
+      "title": "SIGHT ISIMM teams recognized across SDC 4.0 and TSYP 13.0",
+      "summary": "Technical, non-technical and ambassador recognitions celebrate the commitment of members and project teams.",
+      "date": "2026-04-30",
+      "category": "Announcement",
+      "imageUrls": [
+        "/images/home/hero-image.png"
+      ],
+      "link": "",
+      "linkLabel": "Read more",
+      "isPinned": false,
+      "hasDeadline": false,
+      "deadlineDate": ""
+    }
+  ]
+}

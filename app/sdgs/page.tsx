@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
@@ -26,8 +26,8 @@ const sdgs: SDG[] = [
     title: "No Poverty",
     shortTitle: "End poverty in all its forms everywhere",
     description: "End poverty in all its forms everywhere. More than 700 million people still live in extreme poverty and are struggling to fulfill the most basic needs like health, education, and access to water and sanitation.",
-    color: "from-red-500 to-red-700",
-    bgColor: "bg-red-600",
+    color: "from-sky-500 to-sky-700",
+    bgColor: "bg-sky-600",
     icon: Heart,
     image: "/images/sdgs/sdg1.png",
     targets: ["Eradicate extreme poverty", "Reduce poverty by at least 50%", "Implement social protection systems"],
@@ -62,7 +62,7 @@ const sdgs: SDG[] = [
     title: "Quality Education",
     shortTitle: "Ensure inclusive and equitable quality education",
     description: "Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all. Education is the foundation for improving people's lives and sustainable development.",
-    color: "from-red-500 to-red-700",
+    color: "from-sky-500 to-sky-700",
     bgColor: "bg-rose-600",
     icon: BookOpen,
     image: "/images/sdgs/sdg4.png",
@@ -110,8 +110,8 @@ const sdgs: SDG[] = [
     title: "Decent Work and Economic Growth",
     shortTitle: "Promote sustained, inclusive and sustainable economic growth",
     description: "Promote sustained, inclusive and sustainable economic growth, full and productive employment and decent work for all. Economic growth should be a positive force for the whole planet.",
-    color: "from-red-500 to-red-700",
-    bgColor: "bg-red-700",
+    color: "from-sky-500 to-sky-700",
+    bgColor: "bg-sky-700",
     icon: Target,
     image: "/images/sdgs/sdg8.png",
     targets: ["Sustain per capita economic growth", "Achieve higher levels of productivity", "Promote development-oriented policies"],
@@ -134,7 +134,7 @@ const sdgs: SDG[] = [
     title: "Reduced Inequalities",
     shortTitle: "Reduce inequality within and among countries",
     description: "Reduce inequality within and among countries. The international community has made significant strides towards lifting people out of poverty.",
-    color: "from-red-500 to-red-700",
+    color: "from-sky-500 to-sky-700",
     bgColor: "bg-fuchsia-600",
     icon: Scale,
     image: "/images/sdgs/sdg10.png",
@@ -252,13 +252,13 @@ export default function SDGsPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-red-50 to-white py-20">
+      <section className="border-b bg-gradient-to-br from-red-50 via-background to-red-50 py-20 dark:from-slate-950 dark:via-background dark:to-red-950/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center animate-fade-in-up">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Sustainable Development <span className="text-red-700">Goals</span>
+            <h1 className="mb-6 text-4xl font-bold text-foreground md:text-5xl">
+              Sustainable Development <span className="text-primary">Goals</span>
             </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
+            <p className="text-xl leading-relaxed text-muted-foreground">
               Discover the 17 Sustainable Development Goals.
             </p>
           </div>
@@ -266,22 +266,22 @@ export default function SDGsPage() {
       </section>
 
       {/* Interactive SDGs Showcase */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-red-50 relative overflow-hidden">
+      <section className="relative overflow-hidden bg-gradient-to-br from-muted/40 via-background to-red-50 py-20 dark:from-slate-950 dark:via-background dark:to-red-950/20">
         {/* Background Decorations */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-red-100 rounded-full filter blur-3xl opacity-20"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-100 rounded-full filter blur-3xl opacity-20"></div>
+        <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-red-200/40 opacity-30 blur-3xl dark:bg-red-900/30"></div>
+        <div className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-red-100/50 opacity-30 blur-3xl dark:bg-red-950/40"></div>
         
         <div className="container mx-auto px-4 relative z-10">
           {/* Section Header */}
           <div className="text-center mb-16 animate-on-scroll">
-            <div className="inline-flex items-center bg-white px-6 py-3 rounded-full shadow-md mb-6">
-              <Sparkles className="h-5 w-5 text-red-700 mr-2" />
-              <span className="text-gray-700 font-semibold">Click any goal to explore</span>
+            <div className="mb-6 inline-flex items-center rounded-full border border-border bg-card px-6 py-3 shadow-md">
+              <Sparkles className="mr-2 h-5 w-5 text-primary" />
+              <span className="font-semibold text-foreground">Click any goal to explore</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="mb-4 text-3xl font-bold text-foreground md:text-4xl">
               17 Goals to Transform Our World
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="mx-auto max-w-3xl text-lg text-muted-foreground">
               Discover how technology drives sustainable development and humanitarian innovation
             </p>
           </div>
@@ -337,10 +337,10 @@ export default function SDGsPage() {
                         <span className="text-white text-2xl font-black">{sdg.id}</span>
                       </div>
                       <div className="flex-1">
-                        <DialogTitle className="text-2xl font-bold text-gray-900 mb-2">
+                        <DialogTitle className="mb-2 text-2xl font-bold text-foreground">
                           {sdg.title}
                         </DialogTitle>
-                        <DialogDescription className="text-base text-gray-600 font-medium">
+                        <DialogDescription className="text-base font-medium text-muted-foreground">
                           {sdg.shortTitle}
                         </DialogDescription>
                       </div>
@@ -348,7 +348,7 @@ export default function SDGsPage() {
                   </DialogHeader>
 
                   {/* SDG Image */}
-                  <div className="relative h-64 w-full rounded-xl overflow-hidden mb-6 bg-gray-100">
+                  <div className="relative mb-6 h-64 w-full overflow-hidden rounded-xl bg-muted">
                     <Image
                       src={sdg.image}
                       alt={sdg.title}
@@ -363,31 +363,31 @@ export default function SDGsPage() {
 
                   {/* Description */}
                   <div className="mb-6">
-                    <h4 className="text-lg font-bold text-gray-900 mb-3">About This Goal</h4>
-                    <p className="text-gray-700 leading-relaxed">{sdg.description}</p>
+                    <h4 className="mb-3 text-lg font-bold text-foreground">About This Goal</h4>
+                    <p className="leading-relaxed text-muted-foreground">{sdg.description}</p>
                   </div>
 
                   {/* Technology Impact */}
-                  <div className="mb-6 bg-gradient-to-br from-red-50 to-orange-50 p-6 rounded-xl border border-red-100">
+                  <div className="mb-6 rounded-xl border border-red-100 bg-gradient-to-br from-red-50 to-orange-50 p-6 dark:border-red-900/60 dark:from-red-950/50 dark:to-orange-950/20">
                     <div className="flex items-center mb-3">
-                      <div className="bg-red-600 w-10 h-10 rounded-lg flex items-center justify-center mr-3">
+                      <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
                         <Sparkles className="h-5 w-5 text-white" />
                       </div>
-                      <h4 className="text-lg font-bold text-gray-900">Technology Impact</h4>
+                      <h4 className="text-lg font-bold text-foreground">Technology Impact</h4>
                     </div>
-                    <p className="text-gray-700 leading-relaxed">{sdg.technologyImpact}</p>
+                    <p className="leading-relaxed text-muted-foreground">{sdg.technologyImpact}</p>
                   </div>
 
                   {/* Key Targets */}
                   <div>
-                    <h4 className="text-lg font-bold text-gray-900 mb-4">Key Targets</h4>
+                    <h4 className="mb-4 text-lg font-bold text-foreground">Key Targets</h4>
                     <div className="space-y-3">
                       {sdg.targets.map((target, index) => (
                         <div key={index} className="flex items-start gap-3">
                           <div className={`${sdg.bgColor} w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5`}>
                             <span className="text-white text-sm font-bold">{index + 1}</span>
                           </div>
-                          <p className="text-gray-700 leading-relaxed flex-1">{target}</p>
+                          <p className="flex-1 leading-relaxed text-muted-foreground">{target}</p>
                         </div>
                       ))}
                     </div>
@@ -399,26 +399,26 @@ export default function SDGsPage() {
 
           {/* Bottom Info */}
           <div className="text-center mt-16 animate-on-scroll">
-            <div className="bg-white rounded-2xl p-8 shadow-lg max-w-4xl mx-auto border border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            <div className="mx-auto max-w-4xl rounded-2xl border border-border bg-card p-8 shadow-lg">
+              <h3 className="mb-4 text-2xl font-bold text-foreground">
                 Technology for Global Goals
               </h3>
-              <p className="text-gray-600 leading-relaxed mb-6">
+              <p className="mb-6 leading-relaxed text-muted-foreground">
                 At IEEE SIGHT ISIMM, we leverage cutting-edge technology to accelerate progress toward the SDGs.
                 Each goal presents unique challenges that require innovative, sustainable solutions powered by engineering and technology.
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
-                <div className="bg-red-50 px-4 py-2 rounded-full">
-                  <span className="text-red-700 font-semibold text-sm">Innovation</span>
+                <div className="rounded-full bg-primary/10 px-4 py-2">
+                  <span className="text-sm font-semibold text-primary">Innovation</span>
                 </div>
-                <div className="bg-blue-50 px-4 py-2 rounded-full">
-                  <span className="text-blue-700 font-semibold text-sm">Sustainability</span>
+                <div className="rounded-full bg-primary/10 px-4 py-2">
+                  <span className="text-sm font-semibold text-primary">Sustainability</span>
                 </div>
-                <div className="bg-green-50 px-4 py-2 rounded-full">
-                  <span className="text-green-700 font-semibold text-sm">Impact</span>
+                <div className="rounded-full bg-primary/10 px-4 py-2">
+                  <span className="text-sm font-semibold text-primary">Impact</span>
                 </div>
-                <div className="bg-purple-50 px-4 py-2 rounded-full">
-                  <span className="text-purple-700 font-semibold text-sm">Collaboration</span>
+                <div className="rounded-full bg-primary/10 px-4 py-2">
+                  <span className="text-sm font-semibold text-primary">Collaboration</span>
                 </div>
               </div>
             </div>

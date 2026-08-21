@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
@@ -13,8 +13,11 @@ import { Plus, Edit, Trash2, Upload, Eye, EyeOff, Loader2, Users, Award, Mail, D
 import Image from "next/image"
 import {
   loginAdmin,
+  getAdminSession,
+  logoutAdmin,
   getEvents,
   createEvent,
+  updateEvent,
   deleteEvent,
   uploadImages,
   getMandates,
@@ -27,6 +30,7 @@ import {
   uploadExcomImage,
   getAwards,
   createAward,
+  updateAward,
   deleteAward,
   getNewsletterSubscribers,
   getProjects,
@@ -37,6 +41,10 @@ import {
   createNews,
   updateNews,
   deleteNews,
+  getAdminAccounts,
+  createAdminAccount,
+  updateAdminAccount,
+  deleteAdminAccount,
   type ProjectData,
   type EventData,
   type NewsData,
@@ -53,6 +61,7 @@ interface Event {
   location: string
   eventType: "upcoming" | "previous"
   registrationLink?: string
+  vToolsUrl?: string
   attendees: number
   images: string[]
   created_at: string
@@ -96,6 +105,16 @@ interface NewsletterSubscriber {
   subscribedAt: string
 }
 
+interface AdminAccount {
+  _id: string
+  name: string
+  email: string
+  role: string
+  active: boolean
+  createdAt: string
+  updatedAt: string
+}
+
 interface ProjectItem {
   _id: string
   title: string
@@ -107,6 +126,7 @@ interface ProjectItem {
   imageUrls?: string[]
   imageUrl?: string
   proposalFormUrl?: string
+  vToolsUrl?: string
   status: "Completed" | "In Progress" | "Planned"
   createdAt?: string
   updatedAt?: string
@@ -131,11 +151,15 @@ interface NewsItem {
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [checkingSession, setCheckingSession] = useState(true)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [events, setEvents] = useState<Event[]>([])
+  const [eventVToolsDrafts, setEventVToolsDrafts] = useState<Record<string, string>>({})
+  const [editingEventId, setEditingEventId] = useState<string | null>(null)
+  const [editEventForm, setEditEventForm] = useState<Partial<EventData>>({})
   const [newEvent, setNewEvent] = useState<EventData>({
     title: "",
     description: "",
@@ -143,6 +167,7 @@ export default function AdminPage() {
     location: "",
     eventType: "previous",
     registrationLink: "",
+    vToolsUrl: "",
     attendees: 0,
     images: [],
   })
@@ -175,6 +200,15 @@ export default function AdminPage() {
   // Awards state
   const [awards, setAwards] = useState<AwardItem[]>([])
   const [newAward, setNewAward] = useState({ title: "", year: new Date().getFullYear(), description: "", imageUrls: [] as string[] })
+  const [editingAwardId, setEditingAwardId] = useState<string | null>(null)
+  const [editAwardForm, setEditAwardForm] = useState<Partial<Omit<AwardItem, "_id">>>({})
+
+  // Additional administrator accounts. The environment account remains a protected bootstrap login.
+  const [accounts, setAccounts] = useState<AdminAccount[]>([])
+  const [bootstrapAccount, setBootstrapAccount] = useState("")
+  const [newAccount, setNewAccount] = useState({ name: "", email: "", password: "" })
+  const [editingAccountId, setEditingAccountId] = useState<string | null>(null)
+  const [editAccountForm, setEditAccountForm] = useState({ name: "", email: "", password: "", active: true })
 
   // Newsletter subscribers state
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([])
@@ -189,6 +223,7 @@ export default function AdminPage() {
     customType: "",
     imageUrls: [],
     proposalFormUrl: "",
+    vToolsUrl: "",
     status: "Planned",
   })
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null)
@@ -221,6 +256,13 @@ export default function AdminPage() {
   }>({ open: false, title: "", onConfirm: () => {} })
   const [confirmLoading, setConfirmLoading] = useState(false)
 
+  useEffect(() => {
+    getAdminSession()
+      .then((response) => setIsAuthenticated(Boolean(response.authenticated)))
+      .catch(() => setIsAuthenticated(false))
+      .finally(() => setCheckingSession(false))
+  }, [])
+
   // Load events on authentication
   useEffect(() => {
     if (isAuthenticated) {
@@ -230,6 +272,7 @@ export default function AdminPage() {
       loadSubscribers()
       loadProjects()
       loadNews()
+      loadAccounts()
     }
   }, [isAuthenticated])
 
@@ -307,6 +350,7 @@ export default function AdminPage() {
       const response = await getEvents()
       if (response.success) {
         setEvents(response.data)
+        setEventVToolsDrafts(Object.fromEntries((response.data as Event[]).map((event) => [event._id, event.vToolsUrl || ""])))
       } else {
         console.error('Failed to load events:', response.message)
       }
@@ -343,9 +387,22 @@ export default function AdminPage() {
     }
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logoutAdmin().catch(() => null)
     setIsAuthenticated(false)
     setEvents([])
+  }
+
+  const loadAccounts = async () => {
+    try {
+      const res = await getAdminAccounts()
+      if (res.success) {
+        setAccounts(res.data ?? [])
+        setBootstrapAccount(res.bootstrapAccount ?? "")
+      }
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   const handleAddEvent = async () => {
@@ -365,6 +422,11 @@ export default function AdminPage() {
       }
     }
 
+    if (newEvent.vToolsUrl?.trim() && !/^https?:\/\//i.test(newEvent.vToolsUrl.trim())) {
+      toast.error("vTools link must start with http:// or https://")
+      return
+    }
+
     try {
       setLoading(true)
       const response = await createEvent(newEvent)
@@ -378,6 +440,7 @@ export default function AdminPage() {
           location: "",
           eventType: "previous",
           registrationLink: "",
+          vToolsUrl: "",
           attendees: 0,
           images: [],
         })
@@ -592,6 +655,11 @@ export default function AdminPage() {
       return
     }
 
+    if (newProject.vToolsUrl?.trim() && !/^https?:\/\//i.test(newProject.vToolsUrl.trim())) {
+      toast.error("vTools link must start with http:// or https://")
+      return
+    }
+
     try {
       setLoading(true)
       const res = await createProject(newProject)
@@ -605,6 +673,7 @@ export default function AdminPage() {
           customType: "",
           imageUrls: [],
           proposalFormUrl: "",
+          vToolsUrl: "",
           status: "Planned",
         })
         toast.success("Project created successfully!")
@@ -627,6 +696,10 @@ export default function AdminPage() {
     }
     if (editProjectForm.proposalFormUrl !== undefined && !/^https?:\/\//i.test(editProjectForm.proposalFormUrl.trim())) {
       toast.error("Please provide a valid proposal form URL starting with http:// or https://")
+      return
+    }
+    if (editProjectForm.vToolsUrl?.trim() && !/^https?:\/\//i.test(editProjectForm.vToolsUrl.trim())) {
+      toast.error("vTools link must start with http:// or https://")
       return
     }
 
@@ -831,7 +904,7 @@ export default function AdminPage() {
     })
   }
 
-  const handleAwardImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAwardImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, forEdit = false) => {
     const files = e.target.files
     if (!files || files.length === 0) return
     try {
@@ -843,7 +916,11 @@ export default function AdminPage() {
       }
 
       const uploadedUrls = (uploadResponse.files || []).map((file: { url: string }) => file.url)
-      setNewAward((prev) => ({ ...prev, imageUrls: [...(prev.imageUrls || []), ...uploadedUrls] }))
+      if (forEdit) {
+        setEditAwardForm((prev) => ({ ...prev, imageUrls: [...(prev.imageUrls || []), ...uploadedUrls] }))
+      } else {
+        setNewAward((prev) => ({ ...prev, imageUrls: [...(prev.imageUrls || []), ...uploadedUrls] }))
+      }
       toast.success("Images uploaded")
     } catch (err) {
       console.error(err)
@@ -960,10 +1037,14 @@ export default function AdminPage() {
         // Extract URLs from the response
         const uploadedUrls = uploadResponse.files.map((file: { url: string; path: string }) => file.url)
         
-        setNewEvent({
-          ...newEvent,
-          images: [...(newEvent.images || []), ...uploadedUrls],
-        })
+        if (isEditing) {
+          setEditEventForm((prev) => ({ ...prev, images: [...(prev.images || []), ...uploadedUrls] }))
+        } else {
+          setNewEvent({
+            ...newEvent,
+            images: [...(newEvent.images || []), ...uploadedUrls],
+          })
+        }
       } else {
         toast.error('Failed to upload images: ' + uploadResponse.message)
       }
@@ -980,6 +1061,13 @@ export default function AdminPage() {
       ...newEvent,
       images: (newEvent.images || []).filter((_, i) => i !== index),
     })
+  }
+
+  const removeEditEventImage = (index: number) => {
+    setEditEventForm((prev) => ({
+      ...prev,
+      images: (prev.images || []).filter((_, i) => i !== index),
+    }))
   }
 
   const removeProjectImage = (index: number, forEdit = false) => {
@@ -1012,11 +1100,174 @@ export default function AdminPage() {
     }))
   }
 
-  const removeAwardImage = (index: number) => {
+  const removeAwardImage = (index: number, forEdit = false) => {
+    if (forEdit) {
+      setEditAwardForm((prev) => ({
+        ...prev,
+        imageUrls: (prev.imageUrls || []).filter((_, i) => i !== index),
+      }))
+      return
+    }
     setNewAward((prev) => ({
       ...prev,
       imageUrls: (prev.imageUrls || []).filter((_, i) => i !== index),
     }))
+  }
+
+  const handleUpdateEvent = async () => {
+    if (!editingEventId) return
+    if (!editEventForm.title?.trim() || !editEventForm.description?.trim() || !editEventForm.date || !editEventForm.location?.trim()) {
+      toast.error("Please fill in all required event fields")
+      return
+    }
+    if (editEventForm.eventType === "upcoming" && !editEventForm.registrationLink?.trim()) {
+      toast.error("Please provide a registration link for upcoming events")
+      return
+    }
+    for (const link of [editEventForm.registrationLink, editEventForm.vToolsUrl]) {
+      if (link?.trim() && !/^https?:\/\//i.test(link.trim())) {
+        toast.error("Links must start with http:// or https://")
+        return
+      }
+    }
+
+    try {
+      setLoading(true)
+      const res = await updateEvent(editingEventId, editEventForm)
+      if (res.success) {
+        setEvents(events.map((event) => event._id === editingEventId ? { ...event, ...res.data } : event))
+        setEditingEventId(null)
+        setEditEventForm({})
+        toast.success("Event updated successfully!")
+      } else toast.error(res.message || "Failed to update event")
+    } catch (e) {
+      console.error(e)
+      toast.error("Failed to update event")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleUpdateAward = async () => {
+    if (!editingAwardId || !editAwardForm.title?.trim() || !editAwardForm.year) {
+      toast.error("Please fill title and year")
+      return
+    }
+    try {
+      setLoading(true)
+      const res = await updateAward(editingAwardId, {
+        title: editAwardForm.title,
+        year: Number(editAwardForm.year),
+        description: editAwardForm.description || "",
+        imageUrls: editAwardForm.imageUrls || [],
+      })
+      if (res.success) {
+        setAwards(awards.map((award) => award._id === editingAwardId ? { ...award, ...res.data } : award))
+        setEditingAwardId(null)
+        setEditAwardForm({})
+        toast.success("Award updated successfully!")
+      } else toast.error(res.message || "Failed to update award")
+    } catch (e) {
+      console.error(e)
+      toast.error("Failed to update award")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleAddAccount = async () => {
+    if (!newAccount.name.trim() || !newAccount.email.trim() || newAccount.password.length < 8) {
+      toast.error("Enter a name, a valid email, and a password of at least 8 characters")
+      return
+    }
+    try {
+      setLoading(true)
+      const res = await createAdminAccount(newAccount)
+      if (res.success) {
+        setAccounts([...accounts, res.data])
+        setNewAccount({ name: "", email: "", password: "" })
+        toast.success("Administrator account created")
+      } else toast.error(res.message || "Failed to create account")
+    } catch (e) {
+      console.error(e)
+      toast.error("Failed to create account")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleUpdateAccount = async () => {
+    if (!editingAccountId || !editAccountForm.name.trim() || !editAccountForm.email.trim()) return
+    if (editAccountForm.password && editAccountForm.password.length < 8) {
+      toast.error("The new password must contain at least 8 characters")
+      return
+    }
+    try {
+      setLoading(true)
+      const res = await updateAdminAccount(editingAccountId, editAccountForm)
+      if (res.success) {
+        setAccounts(accounts.map((account) => account._id === editingAccountId ? res.data : account))
+        setEditingAccountId(null)
+        toast.success("Administrator account updated")
+      } else toast.error(res.message || "Failed to update account")
+    } catch (e) {
+      console.error(e)
+      toast.error("Failed to update account")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const openDeleteAccountDialog = (id: string) => {
+    setConfirmDialog({
+      open: true,
+      title: "Delete administrator account",
+      description: "This account will no longer be able to sign in. Are you sure?",
+      confirmLabel: "Delete",
+      variant: "destructive",
+      onConfirm: async () => {
+        try {
+          setConfirmLoading(true)
+          const res = await deleteAdminAccount(id)
+          if (res.success) {
+            setAccounts(accounts.filter((account) => account._id !== id))
+            toast.success("Administrator account deleted")
+          } else toast.error(res.message || "Failed to delete account")
+        } catch (e) {
+          console.error(e)
+          toast.error("Failed to delete account")
+        } finally {
+          setConfirmLoading(false)
+        }
+      },
+    })
+  }
+
+  if (checkingSession) {
+    return <div className="flex min-h-screen items-center justify-center bg-muted/30"><Loader2 className="h-8 w-8 animate-spin text-primary" aria-label="Checking session" /></div>
+  }
+
+  const handleUpdateEventVTools = async (event: Event) => {
+    const vToolsUrl = (eventVToolsDrafts[event._id] || "").trim()
+    if (vToolsUrl && !/^https?:\/\//i.test(vToolsUrl)) {
+      toast.error("vTools link must start with http:// or https://")
+      return
+    }
+    try {
+      setLoading(true)
+      const response = await updateEvent(event._id, { vToolsUrl })
+      if (response.success) {
+        setEvents(events.map((item) => item._id === event._id ? { ...item, vToolsUrl } : item))
+        toast.success("Event vTools link updated")
+      } else {
+        toast.error(response.message || "Failed to update event")
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to update event")
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (!isAuthenticated) {
@@ -1091,6 +1342,7 @@ export default function AdminPage() {
             <TabsTrigger value="news">Manage News</TabsTrigger>
             <TabsTrigger value="excom">Manage Excom</TabsTrigger>
             <TabsTrigger value="awards">Manage Awards</TabsTrigger>
+            <TabsTrigger value="accounts">Manage Accounts</TabsTrigger>
             <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
           </TabsList>
 
@@ -1116,9 +1368,41 @@ export default function AdminPage() {
                           <span className="inline-flex rounded-full border px-2 py-1 text-xs font-medium text-red-700 border-red-200 bg-red-50 capitalize">
                             {event.eventType || "previous"}
                           </span>
+                          {event.vToolsUrl && <a href={event.vToolsUrl} target="_blank" rel="noopener noreferrer" className="ml-3 text-xs font-semibold text-primary hover:underline">IEEE vTools</a>}
+                        </div>
+                        <div className="mt-3 flex max-w-xl gap-2">
+                          <Input
+                            type="url"
+                            aria-label={`IEEE vTools link for ${event.title}`}
+                            value={eventVToolsDrafts[event._id] ?? event.vToolsUrl ?? ""}
+                            onChange={(changeEvent) => setEventVToolsDrafts({ ...eventVToolsDrafts, [event._id]: changeEvent.target.value })}
+                            placeholder="https://events.vtools.ieee.org/..."
+                          />
+                          <Button type="button" variant="outline" size="sm" onClick={() => handleUpdateEventVTools(event)} disabled={loading}>Save vTools</Button>
                         </div>
                       </div>
                       <div className="flex space-x-2">
+                        <Button
+                          onClick={() => {
+                            setEditingEventId(event._id)
+                            setEditEventForm({
+                              title: event.title,
+                              description: event.description,
+                              date: event.date?.slice(0, 10),
+                              location: event.location,
+                              eventType: event.eventType || "previous",
+                              registrationLink: event.registrationLink || "",
+                              vToolsUrl: event.vToolsUrl || "",
+                              attendees: event.attendees || 0,
+                              images: event.images || [],
+                            })
+                          }}
+                          size="sm"
+                          variant="outline"
+                          aria-label={`Edit ${event.title}`}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
                         <Button onClick={() => handleDeleteEvent(event._id)} size="sm" variant="destructive">
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -1128,6 +1412,84 @@ export default function AdminPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {editingEventId && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Edit Event</CardTitle>
+                  <CardDescription>Update all information for this event.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Title *</Label>
+                    <Input value={editEventForm.title ?? ""} onChange={(e) => setEditEventForm({ ...editEventForm, title: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Description *</Label>
+                    <Textarea value={editEventForm.description ?? ""} onChange={(e) => setEditEventForm({ ...editEventForm, description: e.target.value })} rows={4} />
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Date *</Label>
+                      <Input type="date" value={editEventForm.date ?? ""} onChange={(e) => setEditEventForm({ ...editEventForm, date: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Location *</Label>
+                      <Input value={editEventForm.location ?? ""} onChange={(e) => setEditEventForm({ ...editEventForm, location: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Event Type</Label>
+                      <Select
+                        value={editEventForm.eventType ?? "previous"}
+                        onValueChange={(value) => setEditEventForm({ ...editEventForm, eventType: value as EventData["eventType"] })}
+                      >
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="upcoming">Upcoming</SelectItem>
+                          <SelectItem value="previous">Previous</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Number of Attendees</Label>
+                      <Input type="number" min="0" value={editEventForm.attendees ?? 0} onChange={(e) => setEditEventForm({ ...editEventForm, attendees: Number(e.target.value) || 0 })} />
+                    </div>
+                  </div>
+                  {editEventForm.eventType === "upcoming" && (
+                    <div className="space-y-2">
+                      <Label>Registration Link *</Label>
+                      <Input type="url" value={editEventForm.registrationLink ?? ""} onChange={(e) => setEditEventForm({ ...editEventForm, registrationLink: e.target.value })} />
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <Label>IEEE vTools Link</Label>
+                    <Input type="url" value={editEventForm.vToolsUrl ?? ""} onChange={(e) => setEditEventForm({ ...editEventForm, vToolsUrl: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Event Images</Label>
+                    {(editEventForm.images || []).length > 0 && (
+                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        {(editEventForm.images || []).map((url, index) => (
+                          <div key={`${url}-${index}`} className="relative">
+                            <Image src={url} alt={`Event image ${index + 1}`} width={160} height={100} className="h-24 w-full rounded object-cover" />
+                            <Button size="sm" variant="destructive" className="absolute -right-2 -top-2 h-6 w-6 p-0" onClick={() => removeEditEventImage(index)}>
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <Input type="file" multiple accept="image/*" onChange={(e) => handleImageUpload(e.target.files, true)} disabled={loading} />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button onClick={handleUpdateEvent} disabled={loading}>Save Changes</Button>
+                    <Button variant="outline" onClick={() => { setEditingEventId(null); setEditEventForm({}) }}>Cancel</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="add-event">
@@ -1208,6 +1570,16 @@ export default function AdminPage() {
                     />
                   </div>
                 )}
+                <div className="space-y-2">
+                  <Label htmlFor="eventVToolsUrl">IEEE vTools Link</Label>
+                  <Input
+                    id="eventVToolsUrl"
+                    type="url"
+                    value={newEvent.vToolsUrl ?? ""}
+                    onChange={(e) => setNewEvent({ ...newEvent, vToolsUrl: e.target.value })}
+                    placeholder="https://events.vtools.ieee.org/..."
+                  />
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="attendees">Number of Attendees</Label>
                   <Input
@@ -1330,6 +1702,16 @@ export default function AdminPage() {
                   />
                 </div>
 
+                <div className="space-y-2">
+                  <Label>IEEE vTools Link</Label>
+                  <Input
+                    type="url"
+                    value={newProject.vToolsUrl ?? ""}
+                    onChange={(e) => setNewProject({ ...newProject, vToolsUrl: e.target.value })}
+                    placeholder="https://events.vtools.ieee.org/..."
+                  />
+                </div>
+
                 <div className="grid sm:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>Date *</Label>
@@ -1416,6 +1798,7 @@ export default function AdminPage() {
                             <span className="inline-flex rounded-full border px-2 py-1 text-xs font-medium text-red-700 border-red-200 bg-red-50">
                               {project.status}
                             </span>
+                            {project.vToolsUrl && <a href={project.vToolsUrl} target="_blank" rel="noopener noreferrer" className="ml-3 text-xs font-semibold text-primary hover:underline">IEEE vTools</a>}
                           </div>
                         </div>
                         <div className="flex gap-2">
@@ -1434,6 +1817,7 @@ export default function AdminPage() {
                                   ? project.imageUrls
                                   : (project.imageUrl ? [project.imageUrl] : []),
                                 proposalFormUrl: project.proposalFormUrl || "",
+                                vToolsUrl: project.vToolsUrl || "",
                                 status: project.status,
                               })
                             }}
@@ -1505,6 +1889,16 @@ export default function AdminPage() {
                       value={editProjectForm.proposalFormUrl ?? ""}
                       onChange={(e) => setEditProjectForm({ ...editProjectForm, proposalFormUrl: e.target.value })}
                       placeholder="https://docs.google.com/forms/..."
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>IEEE vTools Link</Label>
+                    <Input
+                      type="url"
+                      value={editProjectForm.vToolsUrl ?? ""}
+                      onChange={(e) => setEditProjectForm({ ...editProjectForm, vToolsUrl: e.target.value })}
+                      placeholder="https://events.vtools.ieee.org/..."
                     />
                   </div>
 
@@ -2435,14 +2829,190 @@ export default function AdminPage() {
                           <p className="text-sm text-red-700">{award.year}</p>
                         </div>
                       </div>
-                      <Button size="sm" variant="destructive" onClick={() => openDeleteAwardDialog(award._id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingAwardId(award._id)
+                            setEditAwardForm({
+                              title: award.title,
+                              year: award.year,
+                              description: award.description,
+                              imageUrls: award.imageUrls?.length ? award.imageUrls : (award.imageUrl ? [award.imageUrl] : []),
+                            })
+                          }}
+                          aria-label={`Edit ${award.title}`}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="destructive" onClick={() => openDeleteAwardDialog(award._id)} aria-label={`Delete ${award.title}`}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
+
+            {editingAwardId && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Edit Award</CardTitle>
+                  <CardDescription>Update the selected award.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Title *</Label>
+                      <Input value={editAwardForm.title ?? ""} onChange={(e) => setEditAwardForm({ ...editAwardForm, title: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Year *</Label>
+                      <Input type="number" value={editAwardForm.year ?? new Date().getFullYear()} onChange={(e) => setEditAwardForm({ ...editAwardForm, year: Number(e.target.value) })} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Description</Label>
+                    <Textarea value={editAwardForm.description ?? ""} onChange={(e) => setEditAwardForm({ ...editAwardForm, description: e.target.value })} rows={3} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Award Pictures</Label>
+                    {(editAwardForm.imageUrls || []).length > 0 && (
+                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        {(editAwardForm.imageUrls || []).map((url, index) => (
+                          <div key={`${url}-${index}`} className="relative">
+                            <Image src={url} alt={`Award image ${index + 1}`} width={160} height={100} className="h-24 w-full rounded object-cover" />
+                            <Button size="sm" variant="destructive" className="absolute -right-2 -top-2 h-6 w-6 p-0" onClick={() => removeAwardImage(index, true)}>
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <Input type="file" multiple accept="image/*" onChange={(e) => handleAwardImageUpload(e, true)} disabled={loading} />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button onClick={handleUpdateAward} disabled={loading}>Save Changes</Button>
+                    <Button variant="outline" onClick={() => { setEditingAwardId(null); setEditAwardForm({}) }}>Cancel</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="accounts" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Create Administrator Account</CardTitle>
+                <CardDescription>Create an additional account that can access and manage the dashboard.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>Name *</Label>
+                    <Input value={newAccount.name} onChange={(e) => setNewAccount({ ...newAccount, name: e.target.value })} placeholder="Administrator name" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Email *</Label>
+                    <Input type="email" value={newAccount.email} onChange={(e) => setNewAccount({ ...newAccount, email: e.target.value })} placeholder="admin@example.com" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Password *</Label>
+                  <Input type="password" autoComplete="new-password" value={newAccount.password} onChange={(e) => setNewAccount({ ...newAccount, password: e.target.value })} placeholder="At least 8 characters" />
+                </div>
+                <Button onClick={handleAddAccount} disabled={loading}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create Account
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Administrator Accounts</CardTitle>
+                <CardDescription>Modify, activate, deactivate, or delete dashboard accounts.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {bootstrapAccount && (
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/30">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <p className="font-semibold">Primary administrator</p>
+                        <p className="text-sm text-muted-foreground">{bootstrapAccount}</p>
+                      </div>
+                      <span className="rounded-full border border-red-200 bg-white px-3 py-1 text-xs font-medium text-red-700 dark:border-red-900 dark:bg-background">Protected account</span>
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground">This emergency account is configured on the server and cannot be deleted from the dashboard.</p>
+                  </div>
+                )}
+
+                {accounts.length === 0 ? (
+                  <p className="py-4 text-center text-sm text-muted-foreground">No additional administrator accounts.</p>
+                ) : accounts.map((account) => (
+                  <div key={account._id} className="flex flex-wrap items-center justify-between gap-4 rounded-lg border p-4">
+                    <div>
+                      <p className="font-semibold">{account.name}</p>
+                      <p className="text-sm text-muted-foreground">{account.email}</p>
+                      <span className={`mt-2 inline-flex rounded-full border px-2 py-1 text-xs font-medium ${account.active ? "border-green-200 bg-green-50 text-green-700" : "border-gray-200 bg-gray-50 text-gray-600"}`}>
+                        {account.active ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setEditingAccountId(account._id)
+                          setEditAccountForm({ name: account.name, email: account.email, password: "", active: account.active })
+                        }}
+                        aria-label={`Edit ${account.name}`}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button size="sm" variant="destructive" onClick={() => openDeleteAccountDialog(account._id)} aria-label={`Delete ${account.name}`}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {editingAccountId && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Edit Administrator Account</CardTitle>
+                  <CardDescription>Leave the password empty to keep the current password.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Name *</Label>
+                      <Input value={editAccountForm.name} onChange={(e) => setEditAccountForm({ ...editAccountForm, name: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Email *</Label>
+                      <Input type="email" value={editAccountForm.email} onChange={(e) => setEditAccountForm({ ...editAccountForm, email: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>New Password</Label>
+                    <Input type="password" autoComplete="new-password" value={editAccountForm.password} onChange={(e) => setEditAccountForm({ ...editAccountForm, password: e.target.value })} placeholder="Leave empty to keep the current password" />
+                  </div>
+                  <label className="flex items-center gap-2 text-sm font-medium">
+                    <input type="checkbox" checked={editAccountForm.active} onChange={(e) => setEditAccountForm({ ...editAccountForm, active: e.target.checked })} />
+                    Account active
+                  </label>
+                  <div className="flex gap-2">
+                    <Button onClick={handleUpdateAccount} disabled={loading}>Save Changes</Button>
+                    <Button variant="outline" onClick={() => setEditingAccountId(null)}>Cancel</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="newsletter" className="space-y-6">

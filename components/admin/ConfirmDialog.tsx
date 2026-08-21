@@ -41,7 +41,7 @@ export function ConfirmDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md border-red-100 bg-white shadow-xl">
+      <DialogContent className="sm:max-w-md border-border bg-card shadow-xl">
         <DialogHeader>
           <DialogTitle className="text-gray-900">{title}</DialogTitle>
           {description && (
@@ -64,7 +64,7 @@ export function ConfirmDialog({
             variant={variant === "destructive" ? "destructive" : "default"}
             onClick={handleConfirm}
             disabled={loading}
-            className={variant === "default" ? "bg-red-700 hover:bg-red-800" : ""}
+            className={variant === "default" ? "bg-primary hover:bg-primary/90" : ""}
           >
             {loading ? (
               <>

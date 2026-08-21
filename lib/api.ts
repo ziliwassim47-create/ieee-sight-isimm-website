@@ -5,6 +5,13 @@ export interface LoginCredentials {
   password: string
 }
 
+export interface AdminAccountData {
+  name: string
+  email: string
+  password?: string
+  active?: boolean
+}
+
 export interface EventData {
   title: string
   description: string
@@ -12,6 +19,7 @@ export interface EventData {
   location: string
   eventType: "upcoming" | "previous"
   registrationLink?: string
+  vToolsUrl?: string
   attendees?: number
   images?: string[] // URLs returned from /api/upload, now served from MongoDB GridFS
 }
@@ -27,6 +35,7 @@ export interface ProjectData {
   customType?: string
   imageUrls?: string[]
   proposalFormUrl: string
+  vToolsUrl?: string
   status: ProjectStatus
 }
 
@@ -242,6 +251,35 @@ export async function uploadAwardImage(file: File) {
   return response.json()
 }
 
+// Admin accounts API
+export async function getAdminAccounts() {
+  const response = await fetch('/api/accounts', { cache: 'no-store' })
+  return response.json()
+}
+
+export async function createAdminAccount(data: AdminAccountData) {
+  const response = await fetch('/api/accounts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  return response.json()
+}
+
+export async function updateAdminAccount(id: string, data: Partial<AdminAccountData>) {
+  const response = await fetch(`/api/accounts/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  return response.json()
+}
+
+export async function deleteAdminAccount(id: string) {
+  const response = await fetch(`/api/accounts/${id}`, { method: 'DELETE' })
+  return response.json()
+}
+
 // Newsletter API
 export async function subscribeNewsletter(email: string) {
   const response = await fetch('/api/newsletter', {
@@ -319,5 +357,24 @@ export async function deleteNews(id: string) {
   const response = await fetch(`/api/news/${id}`, {
     method: 'DELETE',
   })
+  return response.json()
+}
+
+export async function updateEvent(id: string, eventData: Partial<EventData>) {
+  const response = await fetch(`/api/events/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(eventData),
+  })
+  return response.json()
+}
+
+export async function getAdminSession() {
+  const response = await fetch('/api/auth/session', { cache: 'no-store' })
+  return response.json()
+}
+
+export async function logoutAdmin() {
+  const response = await fetch('/api/auth/session', { method: 'DELETE' })
   return response.json()
 }

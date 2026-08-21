@@ -70,6 +70,32 @@ SIGHT ISIMM is dedicated to applying technology to humanitarian challenges, focu
 
 This website is built with modern web technologies to provide a fast, responsive, and accessible experience on all devices - from mobile phones to desktop computers.
 
+## Local setup
+
+1. Copy `.env.example` to `.env.local` and fill in the values.
+2. Run `npm install`.
+3. Run `npm run dev` and open `http://localhost:3000`.
+
+Required server variables are `MONGODB_URI`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and a long random `AUTH_SECRET`. `NEXT_PUBLIC_SITE_URL` controls canonical URLs and sitemap generation.
+
+Admin authentication uses a signed, eight-hour, HttpOnly, same-site cookie. Content-management write routes and subscriber exports require that session. Keep all listed secrets out of client code and source control.
+
+## Initial content and MongoDB seed
+
+The V2 editorial dataset lives in `data/sight-isimm-v2.json`. Public APIs use it as a read-only fallback when MongoDB is unavailable or its public collections are empty, so the website never renders as an empty shell.
+
+After configuring `MONGODB_URI`, persist the same content with:
+
+```bash
+npm run seed
+```
+
+The seed uses stable keys and MongoDB upserts. Running it again updates the mandate, ExCom, events, projects, awards and news instead of duplicating them. Replace provisional dates, placeholder media and general descriptions in the dataset or admin interface when official information becomes available.
+
+## V2 foundation
+
+The current V2 foundation uses the SIGHT ISIMM red identity (`#B91C1C`, hover `#991B1B`, soft background `#FEF2F2`), persistent system-aware light/dark mode, responsive accessible navigation, an impact-focused homepage, public detail URLs, the Impact/Partners/Join/Contact pages, metadata, sitemap, robots rules, a custom 404, and protected admin write APIs. The larger personal member platform (profiles, registrations, attendance, volunteer hours, certificates and notifications) should be introduced as a separate database migration so existing public content remains stable.
+
 ## Get Involved
 
 Interested in humanitarian technology? The website provides information on how to:

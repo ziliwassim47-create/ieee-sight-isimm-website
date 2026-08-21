@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/mongodb'
 import { GridFSBucket, ObjectId } from 'mongodb'
+import { unauthorizedUnlessAdmin } from '@/lib/admin-auth'
 
 export async function POST(request: NextRequest) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
@@ -66,4 +69,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-} 
+}

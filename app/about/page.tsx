@@ -1,10 +1,9 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Target, Eye, Heart, Users, Lightbulb, Globe } from "lucide-react"
-import { aboutImages } from "@/lib/images"
 
 export default function AboutPage() {
   const observerRef = useRef<IntersectionObserver | null>(null)
@@ -68,16 +67,31 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="animate-on-scroll">
-              <div className="relative">
-                <div className="absolute inset-0 bg-red-200 rounded-3xl transform -rotate-6"></div>
-                <Image
-                  src={aboutImages.mission.src}
-                  alt={aboutImages.mission.alt}
-                  width={aboutImages.mission.width}
-                  height={aboutImages.mission.height}
-                  className={aboutImages.mission.className}
-                  priority
-                />
+              <div className="relative isolate mx-auto w-full max-w-xl px-3 py-7 sm:px-7 sm:py-10">
+                <div className="relative z-0 aspect-[4/3] rounded-[2rem] border border-slate-200 bg-white shadow-lg dark:border-slate-800 dark:bg-black" aria-hidden="true" />
+                <div className="absolute inset-x-3 inset-y-7 z-10 rotate-[6deg] overflow-hidden rounded-[2rem] border border-red-200 bg-red-100 shadow-2xl dark:border-red-900 dark:bg-red-950 sm:inset-x-7 sm:inset-y-10" aria-hidden="true">
+                  <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#fff7f7] via-red-100 to-red-200/80 dark:from-red-950 dark:via-red-950 dark:to-black" aria-hidden="true" />
+                </div>
+                <div className="absolute inset-x-3 inset-y-7 z-20 sm:inset-x-7 sm:inset-y-10">
+                  <div className="relative h-full w-full">
+                    <Image
+                      src="/logos/sight.png"
+                      alt="IEEE SIGHT ISIMM — Special Interest Group on Humanitarian Technology"
+                      fill
+                      priority
+                      sizes="(min-width: 1024px) 42vw, 90vw"
+                      className="object-contain p-10 dark:hidden sm:p-14 lg:p-16"
+                    />
+                    <Image
+                      src="/logos/sight logo blanc.png"
+                      alt="IEEE SIGHT ISIMM — Special Interest Group on Humanitarian Technology"
+                      fill
+                      priority
+                      sizes="(min-width: 1024px) 42vw, 90vw"
+                      className="hidden object-contain p-10 dark:block sm:p-14 lg:p-16"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -165,8 +179,8 @@ export default function AboutPage() {
               <div className="relative animate-on-scroll">
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
-                    <div className="absolute inset-0 bg-red-500 rounded-2xl transform rotate-6 opacity-20"></div>
-                    <div className="relative bg-gradient-to-br from-red-500 to-red-700 text-white w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-lg">
+                    <div className="absolute inset-0 bg-red-700 rounded-2xl transform rotate-6 opacity-20"></div>
+                    <div className="relative bg-gradient-to-br from-red-700 to-red-800 text-white w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-lg">
                       1
                     </div>
                   </div>
@@ -176,15 +190,15 @@ export default function AboutPage() {
                   </p>
                 </div>
                 {/* Connecting Line */}
-                <div className="hidden lg:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-red-500 to-transparent -translate-x-1/2"></div>
+                <div className="hidden lg:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-red-700 to-transparent -translate-x-1/2"></div>
               </div>
 
               {/* Step 2: Innovate */}
               <div className="relative animate-on-scroll" style={{ animationDelay: '0.1s' }}>
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
-                    <div className="absolute inset-0 bg-red-500 rounded-2xl transform -rotate-6 opacity-20"></div>
-                    <div className="relative bg-gradient-to-br from-red-500 to-red-700 text-white w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-lg">
+                    <div className="absolute inset-0 bg-red-700 rounded-2xl transform -rotate-6 opacity-20"></div>
+                    <div className="relative bg-gradient-to-br from-red-700 to-red-800 text-white w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-lg">
                       2
                     </div>
                   </div>
@@ -193,15 +207,15 @@ export default function AboutPage() {
                     Our team collaborates to design cutting-edge technology solutions tailored to each challenge
                   </p>
                 </div>
-                <div className="hidden lg:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-red-500 to-transparent -translate-x-1/2"></div>
+                <div className="hidden lg:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-red-700 to-transparent -translate-x-1/2"></div>
               </div>
 
               {/* Step 3: Implement */}
               <div className="relative animate-on-scroll" style={{ animationDelay: '0.2s' }}>
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
-                    <div className="absolute inset-0 bg-red-500 rounded-2xl transform rotate-6 opacity-20"></div>
-                    <div className="relative bg-gradient-to-br from-red-500 to-red-700 text-white w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-lg">
+                    <div className="absolute inset-0 bg-red-700 rounded-2xl transform rotate-6 opacity-20"></div>
+                    <div className="relative bg-gradient-to-br from-red-700 to-red-800 text-white w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-lg">
                       3
                     </div>
                   </div>
@@ -210,15 +224,15 @@ export default function AboutPage() {
                     We bring ideas to life through hands-on development and community engagement
                   </p>
                 </div>
-                <div className="hidden lg:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-red-500 to-transparent -translate-x-1/2"></div>
+                <div className="hidden lg:block absolute top-10 left-full w-full h-1 bg-gradient-to-r from-red-700 to-transparent -translate-x-1/2"></div>
               </div>
 
               {/* Step 4: Impact */}
               <div className="relative animate-on-scroll" style={{ animationDelay: '0.3s' }}>
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
-                    <div className="absolute inset-0 bg-red-500 rounded-2xl transform -rotate-6 opacity-20"></div>
-                    <div className="relative bg-gradient-to-br from-red-500 to-red-700 text-white w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-lg">
+                    <div className="absolute inset-0 bg-red-700 rounded-2xl transform -rotate-6 opacity-20"></div>
+                    <div className="relative bg-gradient-to-br from-red-700 to-red-800 text-white w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold shadow-lg">
                       4
                     </div>
                   </div>

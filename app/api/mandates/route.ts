@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
+import { unauthorizedUnlessAdmin } from "@/lib/admin-auth"
+import { fallbackMandates } from "@/lib/fallback-data"
 
 export async function GET() {
   try {
@@ -13,16 +15,15 @@ export async function GET() {
       ...m,
       _id: m._id?.toString?.() ?? m._id,
     }))
-    return NextResponse.json({ success: true, data: serialized })
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch mandates", error: String(error) },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: true, data: serialized.length ? serialized : fallbackMandates, source: serialized.length ? "mongodb" : "fallback" })
+  } catch {
+    return NextResponse.json({ success: true, data: fallbackMandates, source: "fallback" })
   }
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = unauthorizedUnlessAdmin(request)
+  if (unauthorized) return unauthorized
   try {
     const body = await request.json()
     const { name, startYear, endYear, isCurrent } = body

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getNews } from "@/lib/api"
+import { contentHref } from "@/lib/slug"
 
 interface NewsItem {
   _id: string
@@ -324,17 +325,7 @@ export default function NewsPage() {
                         SIGHT ISIMM update
                       </span>
 
-                      {item.link ? (
-                        <Button asChild size="sm" className="bg-red-700 hover:bg-red-800 text-white">
-                          <Link href={item.link} target="_blank" rel="noopener noreferrer">
-                            {item.linkLabel?.trim() || "Learn More"}
-                          </Link>
-                        </Button>
-                      ) : (
-                        <Button size="sm" variant="outline" disabled>
-                          No Link
-                        </Button>
-                      )}
+                      <Button asChild size="sm"><Link href={contentHref("news", item)}>Read article</Link></Button>
                     </div>
                   </CardContent>
                 </Card>
