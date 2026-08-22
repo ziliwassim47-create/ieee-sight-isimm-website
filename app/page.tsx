@@ -34,7 +34,7 @@ export default function HomePage() {
           </div>
           <div className="relative isolate mx-auto aspect-[824/463] w-full max-w-[824px]">
             <div className="absolute inset-0 z-0 rounded-3xl border border-slate-200 bg-white shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:border-slate-800 dark:bg-black" aria-hidden="true" />
-            <div className="absolute inset-0 z-10 rotate-[6deg] rounded-3xl bg-[#FECACA] shadow-[0_20px_50px_rgba(0,0,0,0.12)] dark:bg-red-950" aria-hidden="true" />
+            <div className="absolute inset-0 z-10 rounded-3xl bg-[#FECACA] shadow-[0_20px_50px_rgba(0,0,0,0.12)] [transform:translate(-10px,8px)_rotate(6deg)] dark:bg-red-950" aria-hidden="true" />
             <div className="absolute inset-0 z-20 overflow-hidden rounded-3xl">
               <Image
                 src="/logos/sight.png"
