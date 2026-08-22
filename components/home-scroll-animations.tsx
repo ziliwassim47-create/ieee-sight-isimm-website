@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 
-const selector = ".home-animate-on-scroll"
+const selector = ".animate-on-scroll"
 
 export function HomeScrollAnimations() {
   useEffect(() => {

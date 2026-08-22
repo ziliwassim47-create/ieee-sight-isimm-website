@@ -7,6 +7,7 @@ import { AdminToaster } from "@/components/AdminToaster"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { SatoutAI } from "@/components/satout-ai"
+import { HomeScrollAnimations } from "@/components/home-scroll-animations"
 
 const websiteTitle = "SIGHT ISIMM - humanitarian technology"
 
@@ -44,6 +45,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="sight-theme" disableTransitionOnChange>
           <a href="#main-content" className="skip-link">Skip to content</a>
+          <HomeScrollAnimations />
           <Header />
           <main id="main-content" className="pt-20">{children}</main>
           <Footer />

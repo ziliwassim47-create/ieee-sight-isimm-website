@@ -92,7 +92,7 @@ export default function AwardsPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-red-50 to-white py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="animate-slide-in-left max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               <span className="text-red-700">Awards</span> & Recognition
             </h1>
@@ -114,10 +114,11 @@ export default function AwardsPage() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {awards.map((award) => (
+              {awards.map((award, index) => (
                 <div
                   key={award._id}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+                  data-reveal-delay={index * 80}
+                  className="animate-on-scroll bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 transform-gpu hover:-translate-y-2"
                 >
                   <AwardImageCarousel
                     images={award.imageUrls && award.imageUrls.length > 0 ? award.imageUrls : award.imageUrl ? [award.imageUrl] : []}

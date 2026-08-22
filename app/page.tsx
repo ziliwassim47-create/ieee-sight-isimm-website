@@ -4,7 +4,6 @@ import Link from "next/link"
 import { ArrowRight, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { HomeLiveSections } from "@/components/home-live-sections"
-import { HomeScrollAnimations } from "@/components/home-scroll-animations"
 
 export const metadata: Metadata = {
   title: "SIGHT ISIMM - humanitarian technology",
@@ -15,7 +14,6 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <div className="min-h-screen overflow-hidden">
-      <HomeScrollAnimations />
       <section className="relative isolate border-b bg-gradient-to-br from-red-50 via-background to-red-50 py-16 dark:from-slate-950 dark:via-background dark:to-red-950/30 lg:py-24">
         <div className="absolute inset-0 -z-10 opacity-40 [background-image:radial-gradient(circle_at_1px_1px,hsl(var(--primary)/.22)_1px,transparent_0)] [background-size:28px_28px]" />
         <div className="container mx-auto grid items-center gap-12 px-4 lg:grid-cols-[1.05fr_.95fr]">

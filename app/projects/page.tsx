@@ -46,7 +46,7 @@ function ProjectImageCarousel({ images, title }: { images: string[]; title: stri
 
   return (
     <div className="relative h-48 w-full overflow-hidden rounded-t-xl">
-      <Image src={safeImages[currentIndex]} alt={title} fill className="object-cover" />
+      <Image src={safeImages[currentIndex]} alt={title} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
 
       {safeImages.length > 1 ? (
         <>
@@ -153,7 +153,7 @@ export default function ProjectsPage() {
     <div className="min-h-screen bg-gradient-to-b from-red-50/40 via-white to-white">
       <section className="bg-gradient-to-br from-red-50 to-white py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="animate-slide-in-left max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               SIGHT ISIMM <span className="text-red-700">Projects</span>
             </h1>
@@ -165,7 +165,7 @@ export default function ProjectsPage() {
       </section>
 
       <section className="py-10 border-y bg-white/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4">
+        <div className="animate-on-scroll container mx-auto px-4">
           <div className="mb-4 flex items-center gap-2 text-gray-700">
             <Filter className="h-5 w-5 text-red-700" />
             <h2 className="font-semibold">Filter Projects</h2>
@@ -237,7 +237,7 @@ export default function ProjectsPage() {
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredProjects.map((project) => {
+              {filteredProjects.map((project, index) => {
                 const displayType = project.displayType || project.customType || project.projectType
                 const gallery =
                   project.imageUrls && project.imageUrls.length > 0
@@ -247,7 +247,7 @@ export default function ProjectsPage() {
                       : []
 
                 return (
-                  <Card key={project._id} className="border-red-100 shadow-sm hover:shadow-lg transition-shadow duration-300">
+                  <Card key={project._id} data-reveal-delay={index * 80} className="animate-on-scroll group transform-gpu border-red-100 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
                     <ProjectImageCarousel images={gallery} title={project.title} />
                     <CardHeader>
                       <div className="flex items-start justify-between gap-3">

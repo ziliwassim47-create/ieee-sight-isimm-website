@@ -48,7 +48,7 @@ function NewsImageCarousel({ images, title }: { images: string[]; title: string 
 
   return (
     <div className="relative h-48 w-full overflow-hidden rounded-t-xl">
-      <Image src={safeImages[currentIndex]} alt={title} fill className="object-cover" />
+      <Image src={safeImages[currentIndex]} alt={title} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
 
       {safeImages.length > 1 ? (
         <>
@@ -178,7 +178,7 @@ export default function NewsPage() {
     <div className="min-h-screen bg-gradient-to-b from-red-50/40 via-white to-white">
       <section className="bg-gradient-to-br from-red-50 to-white py-20 border-b">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="animate-slide-in-left max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               SIGHT ISIMM <span className="text-red-700">Newsroom</span>
             </h1>
@@ -192,13 +192,14 @@ export default function NewsPage() {
       <section className="py-10 bg-white/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-4">
-            {newsIdeaCards.map((idea) => {
+            {newsIdeaCards.map((idea, index) => {
               const Icon = idea.icon
 
               return (
                 <Card
                   key={idea.title}
-                  className="group border-red-100 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                  data-reveal-delay={index * 80}
+                  className="animate-on-scroll group transform-gpu border-red-100 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
                 >
                   <div className={`h-2 w-full bg-gradient-to-r ${idea.accent}`} />
                   <CardHeader className="pb-3">
@@ -223,7 +224,7 @@ export default function NewsPage() {
       </section>
 
       <section className="py-10 border-b bg-white">
-        <div className="container mx-auto px-4">
+        <div className="animate-on-scroll container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-4">
             <div className="relative md:col-span-2">
               <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -275,8 +276,8 @@ export default function NewsPage() {
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredNews.map((item) => (
-                <Card key={item._id} className="border-red-100 shadow-sm hover:shadow-lg transition-shadow duration-300">
+              {filteredNews.map((item, index) => (
+                <Card key={item._id} data-reveal-delay={index * 80} className="animate-on-scroll group transform-gpu border-red-100 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
                   <NewsImageCarousel
                     images={item.imageUrls && item.imageUrls.length > 0 ? item.imageUrls : item.imageUrl ? [item.imageUrl] : []}
                     title={item.title}
