@@ -43,7 +43,7 @@ export default function HomePage() {
                   fill
                   priority
                   sizes="(min-width: 1024px) 42vw, 90vw"
-                  className="object-contain p-10 dark:hidden sm:p-14 lg:p-16"
+                  className="scale-[0.94] object-contain dark:hidden"
                 />
                 <Image
                   src="/logos/sight logo blanc.png"
@@ -51,7 +51,7 @@ export default function HomePage() {
                   fill
                   priority
                   sizes="(min-width: 1024px) 42vw, 90vw"
-                  className="hidden object-contain p-10 dark:block sm:p-14 lg:p-16"
+                  className="hidden scale-[0.84] object-contain dark:block"
                 />
               </div>
             </div>
