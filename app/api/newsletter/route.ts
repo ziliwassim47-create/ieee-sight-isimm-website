@@ -56,15 +56,21 @@ export async function GET(request: NextRequest) {
   if (unauthorized) return unauthorized
   try {
     const db = await getDb()
-    const subscribers = await db
-      .collection("newsletter")
-      .find({})
-      .sort({ subscribedAt: -1 })
+    const members = await db
+      .collection("members")
+      .find(
+        { status: "active", email: { $type: "string", $ne: "" } },
+        { projection: { firstName: 1, middleName: 1, lastName: 1, email: 1, ieeeMemberId: 1, createdAt: 1 } }
+      )
+      .sort({ firstName: 1, lastName: 1 })
       .toArray()
-    const serialized = subscribers.map((s: { _id?: unknown; subscribedAt?: Date }) => ({
-      ...s,
-      _id: s._id?.toString?.() ?? s._id,
-      subscribedAt: s.subscribedAt instanceof Date ? s.subscribedAt.toISOString() : s.subscribedAt,
+    const serialized = members.map((member) => ({
+      _id: member._id.toString(),
+      email: String(member.email || "").trim().toLowerCase(),
+      fullName: [member.firstName, member.middleName, member.lastName].filter(Boolean).join(" "),
+      ieeeMemberId: String(member.ieeeMemberId || ""),
+      subscribedAt: member.createdAt instanceof Date ? member.createdAt.toISOString() : member.createdAt,
+      source: "member",
     }))
     return NextResponse.json({ success: true, data: serialized })
   } catch (error) {

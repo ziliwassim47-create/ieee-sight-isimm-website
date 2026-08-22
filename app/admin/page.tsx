@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, Edit, Trash2, Upload, Eye, EyeOff, Loader2, Users, Award, Mail, Download, RefreshCw, Pin } from "lucide-react"
+import { Plus, Edit, Trash2, Upload, Eye, EyeOff, Loader2, Users, Award, Mail, Download, RefreshCw, Pin, UserCheck, UserX } from "lucide-react"
 import Image from "next/image"
 import {
   loginAdmin,
@@ -45,12 +45,17 @@ import {
   createAdminAccount,
   updateAdminAccount,
   deleteAdminAccount,
+  getAdminMembers,
+  createAdminMember,
+  updateAdminMember,
+  deleteAdminMember,
   type ProjectData,
   type EventData,
   type NewsData,
 } from "@/lib/api"
 import { EXCOM_POSITIONS } from "@/lib/excom"
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog"
+import type { PublicMember } from "@/lib/member-types"
 
 // Add local Event type for MongoDB
 interface Event {
@@ -103,13 +108,15 @@ interface NewsletterSubscriber {
   _id: string
   email: string
   subscribedAt: string
+  fullName?: string
+  ieeeMemberId?: string
+  source?: "member"
 }
 
 interface AdminAccount {
   _id: string
   name: string
   email: string
-  role: string
   active: boolean
   createdAt: string
   updatedAt: string
@@ -149,7 +156,62 @@ interface NewsItem {
   updatedAt?: string
 }
 
+const MEMBER_DEPARTMENTS = [
+  "Computer Science",
+  "Mathematics",
+  "Electronics / EEA",
+  "Information & Communication Technologies (ICT)",
+  "Integrated Preparatory Cycle",
+  "Engineering",
+  "Master's Program",
+] as const
+
+const MEMBER_STUDY_LEVELS = [
+  "Licence 1",
+  "Licence 2",
+  "Licence 3",
+  "Preparatory Cycle 1",
+  "Preparatory Cycle 2",
+  "Engineering Cycle 1",
+  "Engineering Cycle 2",
+  "Engineering Cycle 3",
+  "Master 1",
+  "Master 2",
+  "Graduate / Alumni",
+] as const
+
+type PlatformMemberEditForm = {
+  firstName: string
+  middleName: string
+  lastName: string
+  email: string
+  password: string
+  ieeeMemberId: string
+  ieeeGrade: string
+  ieeeStatus: string
+  university: string
+  department: string
+  studyLevel: string
+  photoUrl: string
+}
+
+const memberToEditForm = (member: PublicMember): PlatformMemberEditForm => ({
+  firstName: member.firstName,
+  middleName: member.middleName || "",
+  lastName: member.lastName,
+  email: member.email,
+  password: "",
+  ieeeMemberId: member.ieeeMemberId,
+  ieeeGrade: member.ieeeGrade || "",
+  ieeeStatus: member.ieeeStatus || "",
+  university: member.university,
+  department: member.department,
+  studyLevel: member.studyLevel,
+  photoUrl: member.photoUrl || "",
+})
+
 export default function AdminPage() {
+  const [adminTab, setAdminTab] = useState("events")
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [checkingSession, setCheckingSession] = useState(true)
   const [email, setEmail] = useState("")
@@ -203,12 +265,27 @@ export default function AdminPage() {
   const [editingAwardId, setEditingAwardId] = useState<string | null>(null)
   const [editAwardForm, setEditAwardForm] = useState<Partial<Omit<AwardItem, "_id">>>({})
 
-  // Additional administrator accounts. The environment account remains a protected bootstrap login.
+  // ExCom access accounts synchronized with the member login.
   const [accounts, setAccounts] = useState<AdminAccount[]>([])
-  const [bootstrapAccount, setBootstrapAccount] = useState("")
   const [newAccount, setNewAccount] = useState({ name: "", email: "", password: "" })
   const [editingAccountId, setEditingAccountId] = useState<string | null>(null)
   const [editAccountForm, setEditAccountForm] = useState({ name: "", email: "", password: "", active: true })
+
+  // Member applications and member roles
+  const [members, setMembers] = useState<PublicMember[]>([])
+  const [memberStatusFilter, setMemberStatusFilter] = useState("all")
+  const [newPlatformMember, setNewPlatformMember] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    ieeeMemberId: "",
+    university: "ISIMM",
+    department: "Computer Science",
+    studyLevel: "Licence 1",
+  })
+  const [editingPlatformMemberId, setEditingPlatformMemberId] = useState<string | null>(null)
+  const [editPlatformMemberForm, setEditPlatformMemberForm] = useState<PlatformMemberEditForm | null>(null)
 
   // Newsletter subscribers state
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([])
@@ -273,6 +350,7 @@ export default function AdminPage() {
       loadProjects()
       loadNews()
       loadAccounts()
+      loadMembers()
     }
   }, [isAuthenticated])
 
@@ -398,8 +476,16 @@ export default function AdminPage() {
       const res = await getAdminAccounts()
       if (res.success) {
         setAccounts(res.data ?? [])
-        setBootstrapAccount(res.bootstrapAccount ?? "")
       }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const loadMembers = async (status = memberStatusFilter) => {
+    try {
+      const res = await getAdminMembers(status)
+      if (res.success) setMembers(res.data ?? [])
     } catch (e) {
       console.error(e)
     }
@@ -1186,7 +1272,7 @@ export default function AdminPage() {
       if (res.success) {
         setAccounts([...accounts, res.data])
         setNewAccount({ name: "", email: "", password: "" })
-        toast.success("Administrator account created")
+        toast.success("ExCom account created")
       } else toast.error(res.message || "Failed to create account")
     } catch (e) {
       console.error(e)
@@ -1208,7 +1294,7 @@ export default function AdminPage() {
       if (res.success) {
         setAccounts(accounts.map((account) => account._id === editingAccountId ? res.data : account))
         setEditingAccountId(null)
-        toast.success("Administrator account updated")
+        toast.success("ExCom account updated")
       } else toast.error(res.message || "Failed to update account")
     } catch (e) {
       console.error(e)
@@ -1221,8 +1307,8 @@ export default function AdminPage() {
   const openDeleteAccountDialog = (id: string) => {
     setConfirmDialog({
       open: true,
-      title: "Delete administrator account",
-      description: "This account will no longer be able to sign in. Are you sure?",
+      title: "Delete ExCom account",
+      description: "This account will no longer have ExCom access. Are you sure?",
       confirmLabel: "Delete",
       variant: "destructive",
       onConfirm: async () => {
@@ -1231,11 +1317,204 @@ export default function AdminPage() {
           const res = await deleteAdminAccount(id)
           if (res.success) {
             setAccounts(accounts.filter((account) => account._id !== id))
-            toast.success("Administrator account deleted")
+            toast.success("ExCom account deleted")
           } else toast.error(res.message || "Failed to delete account")
         } catch (e) {
           console.error(e)
           toast.error("Failed to delete account")
+        } finally {
+          setConfirmLoading(false)
+        }
+      },
+    })
+  }
+
+  const handleCreatePlatformMember = async () => {
+    const memberToCreate = {
+      ...newPlatformMember,
+      firstName: newPlatformMember.firstName.trim(),
+      lastName: newPlatformMember.lastName.trim(),
+      email: newPlatformMember.email.trim().toLowerCase(),
+      ieeeMemberId: newPlatformMember.ieeeMemberId.trim(),
+      university: newPlatformMember.university.trim(),
+      department: newPlatformMember.department.trim(),
+      studyLevel: newPlatformMember.studyLevel.trim(),
+    }
+    const requiredFields = [
+      ["First name", memberToCreate.firstName],
+      ["Last name", memberToCreate.lastName],
+      ["Email", memberToCreate.email],
+      ["Temporary password", memberToCreate.password],
+      ["IEEE Member ID", memberToCreate.ieeeMemberId],
+      ["University", memberToCreate.university],
+      ["Department", memberToCreate.department],
+      ["Study level", memberToCreate.studyLevel],
+    ] as const
+    const missingFields = requiredFields.filter(([, value]) => !value).map(([label]) => label)
+
+    if (missingFields.length > 0) {
+      toast.error(`Complete the following field${missingFields.length > 1 ? "s" : ""}: ${missingFields.join(", ")}.`)
+      return
+    }
+    if (memberToCreate.password.length < 8) {
+      toast.error("The password must contain at least 8 characters.")
+      return
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(memberToCreate.email)) {
+      toast.error("Enter a valid member email address.")
+      return
+    }
+    try {
+      setLoading(true)
+      const res = await createAdminMember(memberToCreate)
+      if (res.success) {
+        setMembers([res.data, ...members])
+        setNewPlatformMember({ firstName: "", lastName: "", email: "", password: "", ieeeMemberId: "", university: "ISIMM", department: "Computer Science", studyLevel: "Licence 1" })
+        toast.success("Active member account created")
+      } else toast.error(res.message || "Failed to create member account")
+    } catch (e) {
+      console.error(e)
+      toast.error("Failed to create member account")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const fillTestMember = () => {
+    setNewPlatformMember({
+      firstName: "Wassim",
+      lastName: "Zili",
+      email: "ziliwassim47@gmail.com",
+      password: "",
+      ieeeMemberId: "123456789",
+      university: "ISIMM",
+      department: "Computer Science",
+      studyLevel: "Licence 3",
+    })
+  }
+
+  const exportMembersCsv = () => {
+    const headers = ["Full Name", "Middle Name", "IEEE Member ID", "IEEE Grade", "IEEE Status", "Email", "University", "Department", "Study Level", "Status", "Events Attended", "Volunteer Hours", "Projects", "Certificates", "Badges", "Achievements", "SIGHT Points"]
+    const rows = members.map((member) => [
+      `${member.firstName} ${member.middleName || ""} ${member.lastName}`.replace(/\s+/g, " ").trim(),
+      member.middleName || "",
+      member.ieeeMemberId,
+      member.ieeeGrade || "",
+      member.ieeeStatus || "",
+      member.email,
+      member.university,
+      member.department,
+      member.studyLevel,
+      member.status,
+      member.stats?.eventsAttended || 0,
+      member.stats?.volunteerHours || 0,
+      member.stats?.projects || 0,
+      member.stats?.certificates || 0,
+      member.stats?.badges || 0,
+      member.stats?.achievements || 0,
+      member.stats?.sightPoints || 0,
+    ])
+    const escapeCell = (value: unknown) => {
+      const raw = String(value ?? "")
+      const safe = /^[=+\-@]/.test(raw) ? `'${raw}` : raw
+      return `"${safe.replace(/"/g, '""')}"`
+    }
+    const csv = `\uFEFF${[headers, ...rows].map((row) => row.map(escapeCell).join(",")).join("\n")}`
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }))
+    const anchor = document.createElement("a")
+    anchor.href = url
+    anchor.download = `sight-members-${new Date().toISOString().slice(0, 10)}.csv`
+    anchor.click()
+    URL.revokeObjectURL(url)
+    toast.success("Members CSV exported")
+  }
+
+  const handleAdminMemberUpdate = async (id: string, data: { status?: string; role?: string; officerPosition?: string }) => {
+    try {
+      setLoading(true)
+      const res = await updateAdminMember(id, data)
+      if (res.success) {
+        setMembers(members.map((member) => member._id === id ? { ...member, ...res.data } : member))
+        toast.success(data.status === "active" ? "Member approved" : "Member updated")
+      } else toast.error(res.message || "Failed to update member")
+    } catch (e) {
+      console.error(e)
+      toast.error("Failed to update member")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSavePlatformMember = async () => {
+    if (!editingPlatformMemberId || !editPlatformMemberForm) return
+    const requiredFields = [
+      ["First name", editPlatformMemberForm.firstName],
+      ["Last name", editPlatformMemberForm.lastName],
+      ["Email", editPlatformMemberForm.email],
+      ["IEEE Member ID", editPlatformMemberForm.ieeeMemberId],
+      ["University", editPlatformMemberForm.university],
+      ["Department", editPlatformMemberForm.department],
+      ["Study level", editPlatformMemberForm.studyLevel],
+    ] as const
+    const missingFields = requiredFields.filter(([, value]) => !value.trim()).map(([label]) => label)
+    if (missingFields.length) {
+      toast.error(`Complete the following field${missingFields.length > 1 ? "s" : ""}: ${missingFields.join(", ")}.`)
+      return
+    }
+    if (editPlatformMemberForm.password && editPlatformMemberForm.password.length < 8) {
+      toast.error("The new password must contain at least 8 characters.")
+      return
+    }
+    try {
+      setLoading(true)
+      const res = await updateAdminMember(editingPlatformMemberId, {
+        firstName: editPlatformMemberForm.firstName.trim(),
+        middleName: editPlatformMemberForm.middleName.trim(),
+        lastName: editPlatformMemberForm.lastName.trim(),
+        email: editPlatformMemberForm.email.trim().toLowerCase(),
+        password: editPlatformMemberForm.password,
+        ieeeMemberId: editPlatformMemberForm.ieeeMemberId.trim(),
+        ieeeGrade: editPlatformMemberForm.ieeeGrade.trim(),
+        ieeeStatus: editPlatformMemberForm.ieeeStatus.trim(),
+        university: editPlatformMemberForm.university.trim(),
+        department: editPlatformMemberForm.department.trim(),
+        studyLevel: editPlatformMemberForm.studyLevel.trim(),
+        photoUrl: editPlatformMemberForm.photoUrl.trim(),
+      })
+      if (res.success) {
+        setMembers(members.map((member) => member._id === editingPlatformMemberId ? { ...member, ...res.data } : member))
+        setEditingPlatformMemberId(null)
+        setEditPlatformMemberForm(null)
+        toast.success(editPlatformMemberForm.password ? "Member information and password updated" : "Member information updated")
+      } else {
+        toast.error(res.message || "Failed to update member")
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to update member")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const openDeletePlatformMemberDialog = (id: string) => {
+    setConfirmDialog({
+      open: true,
+      title: "Delete member account",
+      description: "This permanently removes the member account. Are you sure?",
+      confirmLabel: "Delete",
+      variant: "destructive",
+      onConfirm: async () => {
+        try {
+          setConfirmLoading(true)
+          const res = await deleteAdminMember(id)
+          if (res.success) {
+            setMembers(members.filter((member) => member._id !== id))
+            toast.success("Member account deleted")
+          } else toast.error(res.message || "Failed to delete member")
+        } catch (e) {
+          console.error(e)
+          toast.error("Failed to delete member")
         } finally {
           setConfirmLoading(false)
         }
@@ -1334,17 +1613,164 @@ export default function AdminPage() {
           </Button>
         </div>
 
-        <Tabs defaultValue="events" className="space-y-6">
+        <Tabs value={adminTab} onValueChange={setAdminTab} className="space-y-6">
           <TabsList className="flex flex-wrap gap-2">
             <TabsTrigger value="events">Manage Events</TabsTrigger>
-            <TabsTrigger value="add-event">Add New Event</TabsTrigger>
             <TabsTrigger value="projects">Manage Projects</TabsTrigger>
             <TabsTrigger value="news">Manage News</TabsTrigger>
             <TabsTrigger value="excom">Manage Excom</TabsTrigger>
             <TabsTrigger value="awards">Manage Awards</TabsTrigger>
             <TabsTrigger value="accounts">Manage Accounts</TabsTrigger>
+            <TabsTrigger value="members">Manage Members</TabsTrigger>
             <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="members" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Create Member Account</CardTitle>
+                <CardDescription>Only administrators can create accounts. New accounts are active immediately.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2"><Label>First name *</Label><Input value={newPlatformMember.firstName} onChange={(e) => setNewPlatformMember({ ...newPlatformMember, firstName: e.target.value })} /></div>
+                  <div className="space-y-2"><Label>Last name *</Label><Input value={newPlatformMember.lastName} onChange={(e) => setNewPlatformMember({ ...newPlatformMember, lastName: e.target.value })} /></div>
+                  <div className="space-y-2"><Label>Email *</Label><Input type="email" value={newPlatformMember.email} onChange={(e) => setNewPlatformMember({ ...newPlatformMember, email: e.target.value })} /></div>
+                  <div className="space-y-2"><Label>Temporary password *</Label><Input type="password" autoComplete="new-password" minLength={8} value={newPlatformMember.password} onChange={(e) => setNewPlatformMember({ ...newPlatformMember, password: e.target.value })} placeholder="At least 8 characters" /></div>
+                  <div className="space-y-2"><Label>IEEE Member ID *</Label><Input value={newPlatformMember.ieeeMemberId} onChange={(e) => setNewPlatformMember({ ...newPlatformMember, ieeeMemberId: e.target.value })} /></div>
+                  <div className="space-y-2">
+                    <Label>University *</Label>
+                    <Select value={newPlatformMember.university === "ISIMM" ? "ISIMM" : "Other institution"} onValueChange={(value) => setNewPlatformMember({ ...newPlatformMember, university: value === "Other institution" ? "" : value })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent><SelectItem value="ISIMM">ISIMM</SelectItem><SelectItem value="Other institution">Other institution</SelectItem></SelectContent>
+                    </Select>
+                    {newPlatformMember.university !== "ISIMM" && <Input value={newPlatformMember.university} onChange={(e) => setNewPlatformMember({ ...newPlatformMember, university: e.target.value })} placeholder="Institution name" />}
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Department *</Label>
+                    <Select value={(MEMBER_DEPARTMENTS as readonly string[]).includes(newPlatformMember.department) ? newPlatformMember.department : "Other"} onValueChange={(value) => setNewPlatformMember({ ...newPlatformMember, department: value === "Other" ? "" : value })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{MEMBER_DEPARTMENTS.map((department) => <SelectItem key={department} value={department}>{department}</SelectItem>)}<SelectItem value="Other">Other</SelectItem></SelectContent>
+                    </Select>
+                    {!(MEMBER_DEPARTMENTS as readonly string[]).includes(newPlatformMember.department) && <Input value={newPlatformMember.department} onChange={(e) => setNewPlatformMember({ ...newPlatformMember, department: e.target.value })} placeholder="Department name" />}
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Study level *</Label>
+                    <Select value={(MEMBER_STUDY_LEVELS as readonly string[]).includes(newPlatformMember.studyLevel) ? newPlatformMember.studyLevel : "Other"} onValueChange={(value) => setNewPlatformMember({ ...newPlatformMember, studyLevel: value === "Other" ? "" : value })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>{MEMBER_STUDY_LEVELS.map((level) => <SelectItem key={level} value={level}>{level}</SelectItem>)}<SelectItem value="Other">Other</SelectItem></SelectContent>
+                    </Select>
+                    {!(MEMBER_STUDY_LEVELS as readonly string[]).includes(newPlatformMember.studyLevel) && <Input value={newPlatformMember.studyLevel} onChange={(e) => setNewPlatformMember({ ...newPlatformMember, studyLevel: e.target.value })} placeholder="Study level" />}
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={handleCreatePlatformMember} disabled={loading}>
+                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+                    Create Active Member
+                  </Button>
+                  <Button type="button" variant="outline" onClick={fillTestMember}>Fill Test Account</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <CardTitle>Member Accounts</CardTitle>
+                    <CardDescription>Manage access, roles, activity statistics, and member exports.</CardDescription>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Select
+                      value={memberStatusFilter}
+                      onValueChange={(status) => {
+                        setMemberStatusFilter(status)
+                        loadMembers(status)
+                      }}
+                    >
+                      <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All members</SelectItem>
+                        <SelectItem value="active">Active members</SelectItem>
+                        <SelectItem value="suspended">Suspended</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="rejected">Rejected</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button type="button" variant="outline" onClick={exportMembersCsv} disabled={!members.length}><Download className="mr-2 h-4 w-4" />Export Members CSV</Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {members.length === 0 ? (
+                  <p className="py-8 text-center text-sm text-muted-foreground">No members found for this filter.</p>
+                ) : members.map((member) => (
+                  <div key={member._id} className="rounded-xl border p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-bold">{member.firstName} {member.middleName ? `${member.middleName} ` : ""}{member.lastName}</p>
+                          <span className={`rounded-full border px-2 py-1 text-xs font-semibold ${member.status === "active" ? "border-green-200 bg-green-50 text-green-700" : member.status === "pending" ? "border-amber-200 bg-amber-50 text-amber-700" : "border-gray-200 bg-gray-50 text-gray-600"}`}>{member.status}</span>
+                        </div>
+                        <p className="mt-1 text-sm text-muted-foreground">{member.email} • IEEE ID {member.ieeeMemberId}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{member.university} • {member.department} • {member.studyLevel}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">IEEE grade: {member.ieeeGrade || "Not provided"} • IEEE status: {member.ieeeStatus || "Not provided"}</p>
+                        <p className="mt-2 text-xs font-medium text-muted-foreground">
+                          {member.stats?.eventsAttended || 0} events • {member.stats?.volunteerHours || 0} h • {member.stats?.projects || 0} projects • {member.stats?.certificates || 0} certificates • {member.stats?.badges || 0} badges • {member.stats?.achievements || 0} achievements • {member.stats?.sightPoints || 0} points
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingPlatformMemberId(member._id)
+                            setEditPlatformMemberForm(memberToEditForm(member))
+                          }}
+                        >
+                          <Edit className="mr-1 h-4 w-4" />Edit all information
+                        </Button>
+                        {member.status !== "active" && <Button size="sm" onClick={() => handleAdminMemberUpdate(member._id, { status: "active" })} disabled={loading}><UserCheck className="mr-1 h-4 w-4" />Approve</Button>}
+                        {member.status === "pending" && <Button size="sm" variant="outline" onClick={() => handleAdminMemberUpdate(member._id, { status: "rejected" })} disabled={loading}><UserX className="mr-1 h-4 w-4" />Reject</Button>}
+                        {member.status === "active" && <Button size="sm" variant="outline" onClick={() => handleAdminMemberUpdate(member._id, { status: "suspended" })} disabled={loading}>Suspend</Button>}
+                        <Button size="sm" variant="destructive" onClick={() => openDeletePlatformMemberDialog(member._id)}><Trash2 className="h-4 w-4" /></Button>
+                      </div>
+                    </div>
+                    <div className="mt-4 grid gap-2 rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground sm:grid-cols-2 lg:grid-cols-3">
+                      <p><span className="font-semibold text-foreground">Password:</span> securely encrypted — use Edit to reset it</p>
+                      <p><span className="font-semibold text-foreground">Photo:</span> {member.photoUrl || "Not provided"}</p>
+                    </div>
+                    {editingPlatformMemberId === member._id && editPlatformMemberForm && (
+                      <div className="mt-4 space-y-4 rounded-xl border border-primary/20 bg-background p-4">
+                        <div>
+                          <h4 className="font-bold">Edit member account</h4>
+                          <p className="text-xs text-muted-foreground">The current password cannot be displayed. Enter a new one only when it must be reset.</p>
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="space-y-2"><Label>First name *</Label><Input value={editPlatformMemberForm.firstName} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, firstName: e.target.value })} /></div>
+                          <div className="space-y-2"><Label>Last name *</Label><Input value={editPlatformMemberForm.lastName} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, lastName: e.target.value })} /></div>
+                          <div className="space-y-2 sm:col-span-2"><Label>Middle name</Label><Input value={editPlatformMemberForm.middleName} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, middleName: e.target.value })} /></div>
+                          <div className="space-y-2"><Label>Email *</Label><Input type="email" value={editPlatformMemberForm.email} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, email: e.target.value })} /></div>
+                          <div className="space-y-2"><Label>New password (optional)</Label><Input type="password" minLength={8} autoComplete="new-password" value={editPlatformMemberForm.password} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, password: e.target.value })} placeholder="At least 8 characters" /></div>
+                          <div className="space-y-2"><Label>IEEE Member ID *</Label><Input value={editPlatformMemberForm.ieeeMemberId} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, ieeeMemberId: e.target.value })} /></div>
+                          <div className="space-y-2"><Label>IEEE Grade</Label><Input value={editPlatformMemberForm.ieeeGrade} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, ieeeGrade: e.target.value })} /></div>
+                          <div className="space-y-2"><Label>IEEE Status</Label><Input value={editPlatformMemberForm.ieeeStatus} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, ieeeStatus: e.target.value })} /></div>
+                          <div className="space-y-2"><Label>University *</Label><Input value={editPlatformMemberForm.university} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, university: e.target.value })} /></div>
+                          <div className="space-y-2"><Label>Department *</Label><Input value={editPlatformMemberForm.department} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, department: e.target.value })} /></div>
+                          <div className="space-y-2"><Label>Study level *</Label><Input value={editPlatformMemberForm.studyLevel} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, studyLevel: e.target.value })} /></div>
+                          <div className="space-y-2 sm:col-span-2"><Label>Photo URL</Label><Input type="url" value={editPlatformMemberForm.photoUrl} onChange={(e) => setEditPlatformMemberForm({ ...editPlatformMemberForm, photoUrl: e.target.value })} /></div>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <Button onClick={handleSavePlatformMember} disabled={loading}>{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Save member</Button>
+                          <Button type="button" variant="outline" onClick={() => { setEditingPlatformMemberId(null); setEditPlatformMemberForm(null) }} disabled={loading}>Cancel</Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="events" className="space-y-6">
             <Card>
@@ -1492,7 +1918,7 @@ export default function AdminPage() {
             )}
           </TabsContent>
 
-          <TabsContent value="add-event">
+          {adminTab === "events" && <div>
             <Card>
               <CardHeader>
                 <CardTitle>Add New Event</CardTitle>
@@ -1638,7 +2064,7 @@ export default function AdminPage() {
                 </Button>
               </CardContent>
             </Card>
-          </TabsContent>
+          </div>}
 
           <TabsContent value="projects" className="space-y-6">
             <Card>
@@ -2905,14 +3331,14 @@ export default function AdminPage() {
           <TabsContent value="accounts" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Create Administrator Account</CardTitle>
-                <CardDescription>Create an additional account that can access and manage the dashboard.</CardDescription>
+                <CardTitle>Create ExCom Account</CardTitle>
+                <CardDescription>Create an ExCom account that signs in through the member login and manages member activity.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Name *</Label>
-                    <Input value={newAccount.name} onChange={(e) => setNewAccount({ ...newAccount, name: e.target.value })} placeholder="Administrator name" />
+                    <Input value={newAccount.name} onChange={(e) => setNewAccount({ ...newAccount, name: e.target.value })} placeholder="ExCom member name" />
                   </div>
                   <div className="space-y-2">
                     <Label>Email *</Label>
@@ -2925,32 +3351,19 @@ export default function AdminPage() {
                 </div>
                 <Button onClick={handleAddAccount} disabled={loading}>
                   <Plus className="mr-2 h-4 w-4" />
-                  Create Account
+                  Create ExCom Account
                 </Button>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Administrator Accounts</CardTitle>
-                <CardDescription>Modify, activate, deactivate, or delete dashboard accounts.</CardDescription>
+                <CardTitle>ExCom Accounts</CardTitle>
+                <CardDescription>Modify, activate, deactivate, or delete ExCom access accounts.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {bootstrapAccount && (
-                  <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/30">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div>
-                        <p className="font-semibold">Primary administrator</p>
-                        <p className="text-sm text-muted-foreground">{bootstrapAccount}</p>
-                      </div>
-                      <span className="rounded-full border border-red-200 bg-white px-3 py-1 text-xs font-medium text-red-700 dark:border-red-900 dark:bg-background">Protected account</span>
-                    </div>
-                    <p className="mt-2 text-xs text-muted-foreground">This emergency account is configured on the server and cannot be deleted from the dashboard.</p>
-                  </div>
-                )}
-
                 {accounts.length === 0 ? (
-                  <p className="py-4 text-center text-sm text-muted-foreground">No additional administrator accounts.</p>
+                  <p className="py-4 text-center text-sm text-muted-foreground">No ExCom accounts.</p>
                 ) : accounts.map((account) => (
                   <div key={account._id} className="flex flex-wrap items-center justify-between gap-4 rounded-lg border p-4">
                     <div>
@@ -2984,7 +3397,7 @@ export default function AdminPage() {
             {editingAccountId && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Edit Administrator Account</CardTitle>
+                  <CardTitle>Edit ExCom Account</CardTitle>
                   <CardDescription>Leave the password empty to keep the current password.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -3025,7 +3438,7 @@ export default function AdminPage() {
                       Newsletter Subscribers
                     </CardTitle>
                     <CardDescription>
-                      Export this list to CSV to send event reminders. Use your email client&apos;s BCC field with the exported emails.
+                      This list is synchronized automatically with active member accounts. Export it to CSV and use your email client&apos;s BCC field for event reminders.
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
@@ -3048,14 +3461,19 @@ export default function AdminPage() {
                   <Button
                     variant="outline"
                     onClick={() => {
-                      const headers = ["Email", "Subscribed At"]
-                      const rows = subscribers.map((s) => [s.email, s.subscribedAt])
-                      const csv = [headers.join(","), ...rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))].join("\n")
+                      const headers = ["Full Name", "IEEE Member ID", "Email", "Account Created At"]
+                      const rows = subscribers.map((subscriber) => [subscriber.fullName || "", subscriber.ieeeMemberId || "", subscriber.email, subscriber.subscribedAt])
+                      const escapeCell = (value: unknown) => {
+                        const raw = String(value ?? "")
+                        const safe = /^[=+\-@]/.test(raw) ? `'${raw}` : raw
+                        return `"${safe.replace(/"/g, '""')}"`
+                      }
+                      const csv = `\uFEFF${[headers, ...rows].map((row) => row.map(escapeCell).join(",")).join("\n")}`
                       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
                       const url = URL.createObjectURL(blob)
                       const a = document.createElement("a")
                       a.href = url
-                      a.download = `newsletter-subscribers-${new Date().toISOString().slice(0, 10)}.csv`
+                      a.download = `sight-member-emails-${new Date().toISOString().slice(0, 10)}.csv`
                       a.click()
                       URL.revokeObjectURL(url)
                       toast.success("CSV exported successfully!")
@@ -3075,10 +3493,11 @@ export default function AdminPage() {
                   ) : (
                     subscribers.map((s) => (
                       <div key={s._id} className="flex items-center justify-between border rounded-lg px-4 py-2">
-                        <span className="font-mono text-sm">{s.email}</span>
-                        <span className="text-xs text-gray-500">
-                          {new Date(s.subscribedAt).toLocaleDateString()}
-                        </span>
+                        <div>
+                          <p className="text-sm font-semibold">{s.fullName || "Member"}</p>
+                          <p className="font-mono text-xs text-muted-foreground">{s.email}</p>
+                        </div>
+                        <span className="text-xs text-gray-500">IEEE ID {s.ieeeMemberId || "—"}</span>
                       </div>
                     ))
                   )}

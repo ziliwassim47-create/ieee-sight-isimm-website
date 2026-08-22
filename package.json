@@ -5,8 +5,12 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "next lint",
+    "lint": "eslint .",
     "seed": "node --env-file-if-exists=.env.local scripts/seed-sight-v2.mjs",
+    "db:setup": "node --env-file-if-exists=.env.local scripts/setup-database.mjs",
+    "db:migrate-scoring": "node --env-file-if-exists=.env.local scripts/migrate-scoring-system.mjs",
+    "db:migrate-credentials": "node --env-file-if-exists=.env.local scripts/migrate-member-credential-vault.mjs",
+    "db:verify-credentials": "node --env-file-if-exists=.env.local scripts/verify-member-credential-vault.mjs",
     "import:source": "node --env-file-if-exists=.env.local scripts/import-sight-public-content.mjs",
     "import:source:db": "node --env-file-if-exists=.env.local scripts/import-sight-public-content.mjs --database",
     "start": "next start"
@@ -47,10 +51,11 @@
     "critters": "^0.0.25",
     "date-fns": "^2.30.0",
     "embla-carousel-react": "8.5.1",
+    "exceljs": "^4.4.0",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
     "mongodb": "^6.3.0",
-    "next": "^16.1.6",
+    "next": "^16.3.2",
     "next-themes": "^0.4.4",
     "react": "^19.2.4",
     "react-day-picker": "8.10.1",
@@ -68,8 +73,15 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "postcss": "^8.5",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.2",
+    "postcss": "^8.5.26",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
+  },
+  "overrides": {
+    "lodash": "4.18.1",
+    "tmp": "0.2.7",
+    "uuid": "11.1.1"
   }
 }

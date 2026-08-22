@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/mongodb'
 import { ObjectId } from 'mongodb'
 import { unauthorizedUnlessAdmin } from '@/lib/admin-auth'
+import { notifyActiveMembers } from '@/lib/member-notifications'
 
 type Context = { params: Promise<{ id: string }> }
 
@@ -48,6 +49,16 @@ export async function PUT(request: NextRequest, context: Context) {
       { returnDocument: 'after' }
     )
     if (!event) return NextResponse.json({ success: false, message: 'Event not found' }, { status: 404 })
+    if (event.eventType === 'upcoming') {
+      await notifyActiveMembers(db, {
+        type: 'upcoming_event',
+        title: 'Upcoming event updated',
+        message: `${event.title} is scheduled for ${event.date}.`,
+        href: '/dashboard/events',
+        eventId: event._id,
+        dedupeKey: `upcoming-event:${event._id}`,
+      })
+    }
     return NextResponse.json({ success: true, data: { ...event, _id: event._id.toString() }, message: 'Event updated successfully' })
   } catch (error) {
     return NextResponse.json({ success: false, message: 'Internal server error', error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 })

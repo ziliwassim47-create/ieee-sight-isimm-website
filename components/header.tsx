@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X } from "lucide-react"
+import { LogIn, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/ui/logo"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -49,6 +49,12 @@ export default function Header() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          <Button asChild variant="outline" className="rounded-full px-3 sm:px-4">
+            <Link href="/login" aria-label="Member login" className="gap-2">
+              <LogIn className="h-4 w-4" />
+              <span className="hidden sm:inline">Login</span>
+            </Link>
+          </Button>
           <Button asChild className="hidden rounded-full sm:inline-flex"><Link href="/join">Join Us</Link></Button>
           <Button type="button" variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsMenuOpen((open) => !open)} aria-expanded={isMenuOpen} aria-controls="mobile-navigation" aria-label={isMenuOpen ? "Close menu" : "Open menu"}>
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

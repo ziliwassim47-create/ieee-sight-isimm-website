@@ -31,3 +31,6 @@ next-env.d.ts
 .cursor/
 .cursorrules
 *.cursor
+
+# sensitive local exports
+/private-exports/

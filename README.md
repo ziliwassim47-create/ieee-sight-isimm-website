@@ -78,6 +78,21 @@ This website is built with modern web technologies to provide a fast, responsive
 
 Required server variables are `MONGODB_URI`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and a long random `AUTH_SECRET`. `NEXT_PUBLIC_SITE_URL` controls canonical URLs and sitemap generation.
 
+Initialize the V2 database indexes, then import the public content:
+
+```bash
+npm run db:setup
+npm run seed
+```
+
+`GET /api/health` reports whether MongoDB is connected without exposing credentials or the connection string.
+
+## Integrated V2 backend
+
+The backend remains inside the Next.js application under `app/api`; no separate Express server is required. The V2 member and impact workflow uses the MongoDB collections `members`, `event_registrations`, `attendance`, `project_members`, `volunteer_hours`, `certificates`, `member_notifications`, `activity_logs`, `applications`, plus the existing public-content collections.
+
+Core connected routes include member login/session/profile/dashboard, event registration and attendance, project assignments, certificate issuance and public verification, member notifications and activities, member administration, and global Admin statistics. Public account creation is disabled: only an authenticated administrator can create a member account.
+
 Admin authentication uses a signed, eight-hour, HttpOnly, same-site cookie. Content-management write routes and subscriber exports require that session. Keep all listed secrets out of client code and source control.
 
 ## Initial content and MongoDB seed

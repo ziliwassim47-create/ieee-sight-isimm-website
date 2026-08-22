@@ -289,7 +289,7 @@ export default function AboutPage() {
             <div className="mt-16 text-center animate-on-scroll">
               <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-2xl p-8 border border-red-200">
                 <p className="text-lg text-gray-700 font-medium mb-4">
-                  Every solution begins with understanding the community's unique needs
+                  Every solution begins with understanding the community&apos;s unique needs
                 </p>
                 <p className="text-gray-600">
                   Join us in creating technology that truly serves humanity

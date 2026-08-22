@@ -6,6 +6,7 @@ import Footer from "@/components/footer"
 import { AdminToaster } from "@/components/AdminToaster"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ScrollToTop } from "@/components/scroll-to-top"
+import { SatoutAI } from "@/components/satout-ai"
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sight-isimm.ieee.tn"),
@@ -46,6 +47,7 @@ export default function RootLayout({
           <Footer />
           <AdminToaster />
           <ScrollToTop />
+          <SatoutAI />
         </ThemeProvider>
       </body>
     </html>

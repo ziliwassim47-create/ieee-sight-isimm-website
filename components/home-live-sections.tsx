@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Award, CalendarDays, FolderKanban, MapPin, Newspaper, Users } from "lucide-react"
@@ -37,6 +37,7 @@ export function HomeLiveSections() {
   const [events, setEvents] = useState<Event[]>(fallbackEvents)
   const [news, setNews] = useState<News[]>([])
   const [awards, setAwards] = useState<AwardItem[]>([])
+  const [memberCount, setMemberCount] = useState(0)
 
   useEffect(() => {
     let active = true
@@ -45,17 +46,18 @@ export function HomeLiveSections() {
       fetch("/api/events").then((r) => r.json()),
       fetch("/api/news").then((r) => r.json()),
       fetch("/api/awards").then((r) => r.json()),
-    ]).then(([projectResult, eventResult, newsResult, awardResult]) => {
+      fetch("/api/members/count").then((r) => r.json()),
+    ]).then(([projectResult, eventResult, newsResult, awardResult, memberResult]) => {
       if (!active) return
       if (projectResult.status === "fulfilled" && projectResult.value.success) setProjects(projectResult.value.data || [])
       if (eventResult.status === "fulfilled" && eventResult.value.success && eventResult.value.data?.length) setEvents(eventResult.value.data)
       if (newsResult.status === "fulfilled" && newsResult.value.success) setNews(newsResult.value.data || [])
       if (awardResult.status === "fulfilled" && awardResult.value.success) setAwards(awardResult.value.data || [])
+      if (memberResult.status === "fulfilled" && memberResult.value.success) setMemberCount(Number(memberResult.value.data?.count) || 0)
     })
     return () => { active = false }
   }, [])
 
-  const peopleReached = useMemo(() => events.reduce((sum, event) => sum + (Number(event.attendees) || 0), 0), [events])
   const featuredProjects = projects.slice(0, 3)
   const latestEvents = [...events].sort((a, b) => Date.parse(b.date) - Date.parse(a.date)).slice(0, 3)
 
@@ -104,7 +106,7 @@ export function HomeLiveSections() {
             {[
               [FolderKanban, projects.length, "Projects"],
               [CalendarDays, events.length, "Events"],
-              [Users, peopleReached, "People reached"],
+              [Users, memberCount, "Members"],
               [Award, awards.length, "Awards"],
             ].map(([Icon, value, label]) => {
               const StatIcon = Icon as typeof Award

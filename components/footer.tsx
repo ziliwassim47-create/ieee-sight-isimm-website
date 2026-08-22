@@ -42,7 +42,7 @@ export default function Footer() {
       </div>
       <div className="border-t border-slate-800">
         <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-4 py-6 sm:flex-row">
-          <p className="text-xs font-semibold uppercase tracking-[.18em] text-slate-400">Part of the IEEE humanitarian technology ecosystem</p>
+          <p className="text-xs font-semibold uppercase tracking-[.18em] text-slate-400">Part of the IEEE humanitarian technology</p>
           <div className="flex flex-wrap items-center justify-center gap-8">
             <Link href="https://isimm.ieee.tn/" target="_blank" rel="noopener noreferrer" aria-label="IEEE ISIM Monastir Student Branch">
               <Image src="/logos/logo ieee isimm blanc.png" alt="IEEE ISIM Monastir Student Branch" width={428} height={321} className="h-16 w-auto object-contain transition-opacity hover:opacity-80" />

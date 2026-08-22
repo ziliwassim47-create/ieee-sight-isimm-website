@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/mongodb'
 import { unauthorizedUnlessAdmin } from '@/lib/admin-auth'
 import { fallbackEvents } from '@/lib/fallback-data'
+import { notifyActiveMembers } from '@/lib/member-notifications'
 
 // GET all events
 export async function GET() {
@@ -73,6 +74,16 @@ export async function POST(request: NextRequest) {
       updated_at: now
     }
     const result = await db.collection('events').insertOne(event)
+    if (eventType === 'upcoming') {
+      await notifyActiveMembers(db, {
+        type: 'upcoming_event',
+        title: 'New upcoming event',
+        message: `${event.title} is scheduled for ${event.date}.`,
+        href: '/dashboard/events',
+        eventId: result.insertedId,
+        dedupeKey: `upcoming-event:${result.insertedId}`,
+      })
+    }
     return NextResponse.json({ 
       success: true, 
       data: { ...event, _id: result.insertedId },

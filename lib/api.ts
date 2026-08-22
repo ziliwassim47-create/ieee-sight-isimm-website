@@ -280,6 +280,67 @@ export async function deleteAdminAccount(id: string) {
   return response.json()
 }
 
+// Member administration API
+export async function getAdminMembers(status = 'all') {
+  const response = await fetch(`/api/admin/members?status=${encodeURIComponent(status)}`, { cache: 'no-store' })
+  return response.json()
+}
+
+export async function createAdminMember(data: {
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  ieeeMemberId: string
+  university: string
+  department: string
+  studyLevel: string
+}) {
+  const response = await fetch('/api/admin/members', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  return response.json()
+}
+
+export async function updateAdminMember(id: string, data: {
+  firstName?: string
+  middleName?: string
+  lastName?: string
+  email?: string
+  password?: string
+  ieeeMemberId?: string
+  ieeeGrade?: string
+  ieeeStatus?: string
+  university?: string
+  department?: string
+  studyLevel?: string
+  status?: string
+  role?: string
+  officerPosition?: string
+  photoUrl?: string
+  skills?: string[]
+  interests?: string[]
+  technologies?: string[]
+  sdgs?: string[]
+  linkedin?: string
+  github?: string
+  portfolio?: string
+}) {
+  const response = await fetch(`/api/admin/members/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  return response.json()
+}
+
+export async function deleteAdminMember(id: string) {
+  const response = await fetch(`/api/admin/members/${id}`, { method: 'DELETE' })
+  return response.json()
+}
+
 // Newsletter API
 export async function subscribeNewsletter(email: string) {
   const response = await fetch('/api/newsletter', {
