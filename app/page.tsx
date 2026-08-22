@@ -33,15 +33,16 @@ export default function HomePage() {
             </div>
           </div>
           <div className="relative isolate mx-auto aspect-[824/463] w-full max-w-[824px]">
-            <div className="absolute inset-0 z-0 rotate-[6deg] rounded-3xl bg-[#FECACA] shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:bg-red-950" aria-hidden="true" />
-            <div className="relative z-10 h-full w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.12)] dark:border-slate-800 dark:bg-black">
+            <div className="absolute inset-0 z-0 rounded-3xl border border-slate-200 bg-white shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:border-slate-800 dark:bg-black" aria-hidden="true" />
+            <div className="absolute inset-0 z-10 rotate-[6deg] rounded-3xl bg-[#FECACA] shadow-[0_20px_50px_rgba(0,0,0,0.12)] dark:bg-red-950" aria-hidden="true" />
+            <div className="absolute inset-0 z-20 overflow-hidden rounded-3xl">
               <Image
                 src="/logos/sight.png"
                 alt="IEEE SIGHT ISIMM — Special Interest Group on Humanitarian Technology"
                 fill
                 priority
                 sizes="(min-width: 1024px) 42vw, 90vw"
-                className="z-20 scale-[0.94] object-contain dark:hidden"
+                className="scale-[0.94] object-contain dark:hidden"
               />
               <Image
                 src="/logos/sight logo blanc.png"
@@ -49,7 +50,7 @@ export default function HomePage() {
                 fill
                 priority
                 sizes="(min-width: 1024px) 42vw, 90vw"
-                className="z-20 hidden scale-[0.84] object-contain dark:block"
+                className="hidden scale-[0.84] object-contain dark:block"
               />
             </div>
           </div>
