@@ -32,20 +32,17 @@ export default function HomePage() {
               <Button asChild size="lg" variant="outline" className="rounded-full"><Link href="/join">Join SIGHT</Link></Button>
             </div>
           </div>
-          <div className="relative isolate mx-auto w-full max-w-xl px-3 py-7 sm:px-7 sm:py-10">
-            <div className="relative z-0 aspect-[4/3] rounded-[2rem] border border-slate-200 bg-white shadow-lg dark:border-slate-800 dark:bg-black" aria-hidden="true" />
-            <div className="absolute inset-x-3 inset-y-7 z-10 rotate-[6deg] overflow-hidden rounded-[2rem] border border-red-200 bg-red-100 shadow-2xl dark:border-red-900 dark:bg-red-950 sm:inset-x-7 sm:inset-y-10" aria-hidden="true">
-              <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#fff7f7] via-red-100 to-red-200/80 dark:from-red-950 dark:via-red-950 dark:to-black" aria-hidden="true" />
-            </div>
-            <div className="absolute inset-x-3 inset-y-7 z-20 sm:inset-x-7 sm:inset-y-10">
-              <div className="relative h-full w-full">
+          <div className="mx-auto w-full max-w-xl px-3 py-7 sm:px-7 sm:py-10">
+            <div className="relative">
+              <div className="absolute inset-0 rotate-6 rounded-3xl bg-red-200 dark:bg-red-950" aria-hidden="true" />
+              <div className="relative aspect-[6/5] overflow-hidden rounded-3xl border border-red-100 bg-white shadow-2xl dark:border-red-950 dark:bg-black">
                 <Image
                   src="/logos/sight.png"
                   alt="IEEE SIGHT ISIMM — Special Interest Group on Humanitarian Technology"
                   fill
                   priority
                   sizes="(min-width: 1024px) 42vw, 90vw"
-                  className="object-contain p-10 dark:hidden sm:p-14 lg:p-16"
+                  className="object-contain p-8 dark:hidden sm:p-12 lg:p-14"
                 />
                 <Image
                   src="/logos/sight logo blanc.png"
@@ -53,7 +50,7 @@ export default function HomePage() {
                   fill
                   priority
                   sizes="(min-width: 1024px) 42vw, 90vw"
-                  className="hidden object-contain p-10 dark:block sm:p-14 lg:p-16"
+                  className="hidden object-contain p-8 dark:block sm:p-12 lg:p-14"
                 />
               </div>
             </div>
