@@ -8,27 +8,29 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { SatoutAI } from "@/components/satout-ai"
 
+const websiteTitle = "SIGHT ISIMM - humanitarian technology"
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://sight-isimm.ieee.tn"),
   title: {
-    default: "IEEE SIGHT ISIMM | Humanitarian Technology",
-    template: "%s | IEEE SIGHT ISIMM",
+    default: websiteTitle,
+    template: websiteTitle,
   },
+  applicationName: "SIGHT ISIMM",
   description: "IEEE SIGHT ISIMM turns engineering, innovation and community engagement into sustainable humanitarian impact.",
   keywords: ["IEEE", "SIGHT", "ISIMM", "humanitarian technology", "Tunisia", "technology for good"],
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "IEEE SIGHT ISIMM",
-    title: "Engineering Technology for Humanitarian Impact",
+    siteName: "SIGHT ISIMM",
+    title: websiteTitle,
     description: "Discover the projects, events and community impact of IEEE SIGHT ISIMM.",
     images: [{ url: "/images/home/hero-image.png", width: 1200, height: 630, alt: "IEEE SIGHT ISIMM community" }],
   },
   twitter: { card: "summary_large_image" },
   icons: {
-    icon: "/logos/sight.png",
-    shortcut: "/logos/sight.png",
-    apple: "/logos/sight.png",
+    icon: [{ url: "/favicon-sight.ico", type: "image/x-icon" }],
+    shortcut: "/favicon-sight.ico",
   }
 }
 

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { HomeLiveSections } from "@/components/home-live-sections"
 
 export const metadata: Metadata = {
-  title: "Engineering Technology for Humanitarian Impact",
+  title: "SIGHT ISIMM - humanitarian technology",
   description: "Explore IEEE SIGHT ISIMM projects, events and measurable humanitarian impact in Tunisia.",
   alternates: { canonical: "/" },
 }
