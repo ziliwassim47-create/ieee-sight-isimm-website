@@ -123,14 +123,17 @@
 
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
 }
 
 .animate-slide-in-left {
   animation: slideInLeft 0.6s ease-out;
+  animation-fill-mode: both;
 }
 
 .animate-slide-in-right {
   animation: slideInRight 0.6s ease-out;
+  animation-fill-mode: both;
 }
 
 .animate-on-scroll {
@@ -142,6 +145,13 @@
 .animate-on-scroll.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-on-scroll {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Line clamp utilities */
