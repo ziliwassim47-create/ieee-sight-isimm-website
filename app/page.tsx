@@ -32,12 +32,10 @@ export default function HomePage() {
               <Button asChild size="lg" variant="outline" className="rounded-full"><Link href="/join">Join SIGHT</Link></Button>
             </div>
           </div>
-          <div className="relative isolate mx-auto w-full max-w-xl px-3 py-7 sm:px-7 sm:py-10">
-            <div className="relative z-0 aspect-[4/3] rounded-[2rem] border border-slate-200 bg-white shadow-lg dark:border-slate-800 dark:bg-black" aria-hidden="true" />
-            <div className="absolute inset-x-3 inset-y-7 z-10 rotate-[6deg] overflow-hidden rounded-[2rem] border border-red-200 bg-red-100 shadow-2xl dark:border-red-900 dark:bg-red-950 sm:inset-x-7 sm:inset-y-10" aria-hidden="true">
-              <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#fff7f7] via-red-100 to-red-200/80 dark:from-red-950 dark:via-red-950 dark:to-black" aria-hidden="true" />
-            </div>
-            <div className="absolute inset-x-3 inset-y-7 z-20 sm:inset-x-7 sm:inset-y-10">
+          <div className="relative isolate mx-auto aspect-[824/463] w-full max-w-[824px]">
+            <div className="absolute inset-0 z-0 rounded-3xl border border-slate-200 bg-white shadow-lg dark:border-slate-800 dark:bg-black" aria-hidden="true" />
+            <div className="absolute inset-0 z-10 rotate-[6deg] rounded-3xl bg-[#FECACA] shadow-2xl dark:bg-red-950" aria-hidden="true" />
+            <div className="absolute inset-0 z-20">
               <div className="relative h-full w-full">
                 <Image
                   src="/logos/sight.png"
