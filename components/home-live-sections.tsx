@@ -25,7 +25,7 @@ function imageOf(item: { imageUrls?: string[]; imageUrl?: string; images?: strin
 
 function SectionHeading({ eyebrow, title, copy, href, linkLabel }: { eyebrow: string; title: string; copy: string; href?: string; linkLabel?: string }) {
   return (
-    <div className="mb-9 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+    <div className="home-animate-on-scroll animate-on-scroll mb-9 flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div><p className="text-sm font-semibold uppercase tracking-[.18em] text-primary">{eyebrow}</p><h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2><p className="mt-3 max-w-2xl text-muted-foreground">{copy}</p></div>
       {href && <Button asChild variant="ghost" className="group self-start text-primary md:self-auto"><Link href={href}><span className="inline-flex items-center transition-transform duration-300 group-hover:translate-x-2">{linkLabel} <ArrowRight className="ml-2 h-4 w-4" /></span></Link></Button>}
     </div>
@@ -102,7 +102,7 @@ export function HomeLiveSections() {
       </section>
 
       <section className="border-b bg-muted/35 py-10" aria-labelledby="impact-numbers">
-        <div className="home-animate-on-scroll animate-on-scroll container mx-auto px-4">
+        <div className="container mx-auto px-4">
           <h2 id="impact-numbers" className="sr-only">Our impact in numbers</h2>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {[
@@ -113,19 +113,19 @@ export function HomeLiveSections() {
             ].map(([Icon, value, label], index) => {
               const StatIcon = Icon as typeof Award
               const rotation = index % 2 === 0 ? "rotate-[3deg] hover:rotate-[6deg]" : "-rotate-[3deg] hover:-rotate-[6deg]"
-              return <div key={label as string} className={`group rounded-2xl border bg-card p-5 shadow-lg transition-all duration-300 hover:shadow-2xl ${rotation}`}><StatIcon className="h-5 w-5 text-primary transition-transform duration-300 group-hover:scale-110" /><p className="mt-3 text-3xl font-bold tabular-nums">{value as number}</p><p className="text-sm text-muted-foreground">{label as string}</p></div>
+              return <div key={label as string} data-reveal-delay={index * 80} className={`home-animate-on-scroll animate-on-scroll group transform-gpu rounded-2xl border bg-card p-5 shadow-lg transition-all duration-300 hover:shadow-2xl ${rotation}`}><StatIcon className="h-5 w-5 text-primary transition-transform duration-300 group-hover:scale-110" /><p className="mt-3 text-3xl font-bold tabular-nums">{value as number}</p><p className="text-sm text-muted-foreground">{label as string}</p></div>
             })}
           </div>
         </div>
       </section>
 
       <section className="py-16 lg:py-20">
-        <div className="home-animate-on-scroll animate-on-scroll container mx-auto px-4">
+        <div className="container mx-auto px-4">
           <SectionHeading eyebrow="Projects" title="Ideas built into real solutions" copy="Our initiatives connect technical skills with community-defined needs and the UN Sustainable Development Goals." href="/projects" linkLabel="All projects" />
           {featuredProjects.length ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {featuredProjects.map((project) => (
-                <Card key={project._id} className="group overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+              {featuredProjects.map((project, index) => (
+                <Card key={project._id} data-reveal-delay={index * 80} className="home-animate-on-scroll animate-on-scroll group transform-gpu overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
                   <div className="relative aspect-[16/10] overflow-hidden bg-muted"><Image src={imageOf(project)} alt="" fill sizes="(min-width:1024px) 33vw, 100vw" className="object-cover transition-transform duration-300 group-hover:scale-105" /></div>
                   <CardContent className="p-6"><div className="flex flex-wrap gap-2 text-xs font-semibold"><span className="rounded-full bg-primary/10 px-3 py-1 text-primary">{project.displayType || project.projectType || "Tech for Good"}</span><span className="rounded-full bg-muted px-3 py-1">{project.status}</span></div><h3 className="mt-4 text-xl font-bold">{project.title}</h3><p className="mt-2 line-clamp-3 text-sm leading-6 text-muted-foreground">{project.description}</p><Link href={contentHref("projects", project)} className="mt-5 inline-flex items-center font-semibold text-primary transition-transform duration-300 group-hover:translate-x-2">View case study <ArrowRight className="ml-2 h-4 w-4" /></Link></CardContent>
                 </Card>
@@ -136,7 +136,7 @@ export function HomeLiveSections() {
       </section>
 
       <section className="bg-muted/40 py-16 lg:py-20">
-        <div className="home-animate-on-scroll animate-on-scroll container mx-auto px-4">
+        <div className="container mx-auto px-4">
           <SectionHeading eyebrow="Events" title="Learn, build and serve together" copy="Workshops, awareness campaigns and hands-on humanitarian technology activities." href="/events" linkLabel="All events" />
           {eventsLoading ? (
             <div className="grid gap-6 md:grid-cols-3" aria-label="Loading events">
@@ -144,8 +144,8 @@ export function HomeLiveSections() {
             </div>
           ) : latestEvents.length ? (
             <div className="grid gap-6 md:grid-cols-3">
-              {latestEvents.map((event) => (
-                <article key={event._id} className="group overflow-hidden rounded-2xl border bg-card shadow-lg transition-all duration-300 hover:shadow-xl">
+              {latestEvents.map((event, index) => (
+                <article key={event._id} data-reveal-delay={index * 80} className="home-animate-on-scroll animate-on-scroll group transform-gpu overflow-hidden rounded-2xl border bg-card shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                   <div className="relative aspect-video overflow-hidden bg-muted"><Image src={imageOf(event, "/images/events/international-sight-day.jpg")} alt="" fill sizes="(min-width:768px) 33vw, 100vw" className="object-cover transition-transform duration-300 group-hover:scale-105" /><div className="absolute inset-0 bg-red-700/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true" /></div>
                   <div className="p-5"><time className="text-sm font-semibold text-primary">{event.dateIsProvisional ? `${new Date(event.date).getFullYear()} · date to confirm` : new Date(event.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time><h3 className="mt-2 text-xl font-bold">{event.title}</h3><p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground"><MapPin className="h-4 w-4" />{event.location}</p><Link href={contentHref("events", event)} className="mt-4 inline-flex items-center text-sm font-semibold text-primary transition-transform duration-300 group-hover:translate-x-2">View event <ArrowRight className="ml-2 h-4 w-4" /></Link></div>
                 </article>
@@ -156,10 +156,10 @@ export function HomeLiveSections() {
       </section>
 
       <section className="py-16 lg:py-20">
-        <div className="home-animate-on-scroll animate-on-scroll container mx-auto px-4">
+        <div className="container mx-auto px-4">
           <SectionHeading eyebrow="Sustainable Development Goals" title="Impact aligned with global goals" copy="We use the SDGs as a practical framework for local engineering and community action." href="/sdgs" linkLabel="Explore all SDGs" />
           <div className="grid gap-4 sm:grid-cols-3">
-            {[[4,"Quality Education","Skills and accessible learning"],[9,"Industry & Innovation","Responsible technology solutions"],[13,"Climate Action","Community resilience and awareness"]].map(([number,title,copy]) => <Link key={number} href="/sdgs" className="group flex items-center gap-4 rounded-2xl border bg-card p-5 shadow-sm transition hover:border-primary/40 hover:shadow-md"><Image src={`/images/sdgs/sdg${number}.png`} alt={`SDG ${number}`} width={72} height={72} className="rounded-lg" /><div><h3 className="font-bold">SDG {number} · {title}</h3><p className="mt-1 text-sm text-muted-foreground">{copy}</p></div></Link>)}
+            {[[4,"Quality Education","Skills and accessible learning"],[9,"Industry & Innovation","Responsible technology solutions"],[13,"Climate Action","Community resilience and awareness"]].map(([number,title,copy], index) => <Link key={number} href="/sdgs" data-reveal-delay={index * 80} className="home-animate-on-scroll animate-on-scroll group flex transform-gpu items-center gap-4 rounded-2xl border bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"><Image src={`/images/sdgs/sdg${number}.png`} alt={`SDG ${number}`} width={72} height={72} className="rounded-lg transition-transform duration-300 group-hover:scale-110" /><div><h3 className="font-bold">SDG {number} · {title}</h3><p className="mt-1 text-sm text-muted-foreground">{copy}</p></div></Link>)}
           </div>
         </div>
       </section>
