@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ExternalLink, Loader2, Send, Sparkles, X } from "lucide-react"
+import { ExternalLink, Loader2, Send, Sparkles, Trash2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
@@ -28,6 +28,7 @@ export function SatoutAI() {
   const [loading, setLoading] = useState(false)
   const endRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const requestRef = useRef<AbortController | null>(null)
   const hidden = hiddenRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
 
   useEffect(() => {
@@ -47,20 +48,36 @@ export function SatoutAI() {
     setMessages((current) => [...current, userMessage])
     setInput("")
     setLoading(true)
+    const controller = new AbortController()
+    requestRef.current = controller
     try {
       const response = await fetch("/api/satout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
+        signal: controller.signal,
       })
       const result = await response.json()
       if (!response.ok) throw new Error(result.message || "Satout is unavailable")
       setMessages((current) => [...current, { id: Date.now() + 1, role: "assistant", text: result.answer, links: result.links || [] }])
-    } catch {
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return
       setMessages((current) => [...current, { id: Date.now() + 1, role: "assistant", text: "I’m having trouble connecting right now. Please try again or contact us at sight-isimm@ieee.tn." }])
     } finally {
-      setLoading(false)
+      if (requestRef.current === controller) {
+        requestRef.current = null
+        setLoading(false)
+      }
     }
+  }
+
+  const resetConversation = () => {
+    requestRef.current?.abort()
+    requestRef.current = null
+    setMessages([welcomeMessage])
+    setInput("")
+    setLoading(false)
+    window.setTimeout(() => inputRef.current?.focus(), 0)
   }
 
   const submit = (event: FormEvent) => {
@@ -75,6 +92,7 @@ export function SatoutAI() {
       <header className="flex items-center gap-3 bg-gradient-to-r from-red-800 to-red-700 px-4 py-3 text-white">
         <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-white/80 bg-white"><Image src="/images/satout-ai.gif" alt="Satout AI mascot" fill sizes="48px" unoptimized className="object-cover object-center" /></div>
         <div className="min-w-0 flex-1"><h2 className="flex items-center gap-1.5 font-bold">Satout AI <Sparkles className="h-4 w-4 text-amber-300" /></h2><p className="text-xs text-red-100">IEEE SIGHT ISIMM Assistant</p></div>
+        <Button type="button" variant="ghost" size="icon" onClick={resetConversation} className="text-white hover:bg-white/15 hover:text-white" aria-label="Start a new conversation" title="New conversation"><Trash2 className="h-5 w-5" /></Button>
         <Button type="button" variant="ghost" size="icon" onClick={() => setOpen(false)} className="text-white hover:bg-white/15 hover:text-white" aria-label="Close Satout AI"><X className="h-5 w-5" /></Button>
       </header>
 
