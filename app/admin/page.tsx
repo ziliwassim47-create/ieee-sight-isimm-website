@@ -1772,7 +1772,7 @@ export default function AdminPage() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="events" className="space-y-6">
+          <TabsContent value="events" className="flex flex-col gap-6">
             <Card>
               <CardHeader>
                 <CardTitle>All Events</CardTitle>
@@ -1916,9 +1916,8 @@ export default function AdminPage() {
                 </CardContent>
               </Card>
             )}
-          </TabsContent>
 
-          {adminTab === "events" && <div>
+          <div className="order-first">
             <Card>
               <CardHeader>
                 <CardTitle>Add New Event</CardTitle>
@@ -2064,7 +2063,8 @@ export default function AdminPage() {
                 </Button>
               </CardContent>
             </Card>
-          </div>}
+          </div>
+          </TabsContent>
 
           <TabsContent value="projects" className="space-y-6">
             <Card>
